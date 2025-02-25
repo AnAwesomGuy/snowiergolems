@@ -1,0 +1,35 @@
+{
+  "anvil_cost": 3,
+  "description": {
+    "translate": "enchantment.snowiergolems.accuracy"
+  },
+  "effects": {
+    "minecraft:attributes": [
+      {
+        "amount": {
+          "type": "minecraft:linear",
+          "base": 3.0,
+          "per_level_above_first": 3.0
+        },
+        "attribute": "snowiergolems:projectile_accuracy",
+        "id": "snowiergolems:enchantment.projectile_accuracy",
+        "operation": "add_value"
+      }
+    ]
+  },
+  "max_cost": {
+    "base": 65,
+    "per_level_above_first": 20
+  },
+  "max_level": 3,
+  "min_cost": {
+    "base": 20,
+    "per_level_above_first": 18
+  },
+  "primary_items": "snowiergolems:golem_head",
+  "slots": [
+    "head"
+  ],
+  "supported_items": "#snowiergolems:enchantable/golem_head",
+  "weight": 3
+}

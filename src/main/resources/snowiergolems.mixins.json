@@ -1,0 +1,19 @@
+{
+  "required": true,
+  "package": "net.anawesomguy.snowiergolems.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "mixins": [
+    "CarvedPumpkinAccessor",
+    "CarvedPumpkinMixin",
+    "EnchantmentHelperMixin",
+    "ItemEnchantmentsAccessor",
+    "LivingEntityMixin",
+    "SnowGolemMixin"
+  ],
+  "client": [
+    "client.SnowGolemHeadLayerMixin"
+  ]
+}
