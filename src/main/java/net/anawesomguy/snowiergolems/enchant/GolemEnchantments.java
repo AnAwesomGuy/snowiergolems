@@ -2,7 +2,9 @@ package net.anawesomguy.snowiergolems.enchant;
 
 import net.anawesomguy.snowiergolems.SnowierGolems;
 import net.anawesomguy.snowiergolems.data.EnchantmentDatagen;
+import net.anawesomguy.snowiergolems.entity.OwnableSnowGolem;
 import net.anawesomguy.snowiergolems.entity.SnowGolemFollowOwnerGoal;
+import net.anawesomguy.snowiergolems.entity.SnowGolemOwnerHurtByTargetGoal;
 import net.anawesomguy.snowiergolems.entity.SnowGolemOwnerHurtTargetGoal;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
@@ -50,10 +52,13 @@ public interface GolemEnchantments {
      * Makes snow golems aggressive.
      * <ul>
      *     <li> default: targets only {@link Enemy}s
-     *     <li> level 1: {@linkplain HurtByTargetGoal targets those that attack it}
-     *     <li> level 2: targets those that attack it and {@linkplain HurtByTargetGoal#setAlertOthers alerts others} to do so
-     *     <li> level 3: automatically {@linkplain NearestAttackableTargetGoal targets everything} but its owner
+     *     <li> level 1: targets those that attack it
+     *     <li> level 2: targets those that attack it and alerts others to do so
+     *     <li> level 3: automatically targets everything but its owner
      * </ul>
+     *
+     * @see HurtByTargetGoal
+     * @see NearestAttackableTargetGoal
      */
     ResourceKey<Enchantment> AGGRESSIVE = key("aggressive");
     /**
@@ -67,12 +72,19 @@ public interface GolemEnchantments {
      */
     ResourceKey<Enchantment> FROST = key("frost");
     /**
-     * Makes snow golems resistant to {@linkplain BiomeTags#SNOW_GOLEM_MELTS "hot" biomes}.
+     * Makes snow golems resistant to "hot" biomes.
+     *
+     * @see BiomeTags#SNOW_GOLEM_MELTS
      */
     ResourceKey<Enchantment> HEAT_RESISTANT = key("heat_resistance");
     /**
-     * Makes snow golems {@linkplain SnowGolemFollowOwnerGoal follow} its owner (the player closest to it during its creation) and
-     * target mobs that have {@linkplain SnowGolemOwnerHurtTargetGoal attacked its owner} and mobs that its {@linkplain SnowGolemOwnerHurtTargetGoal owner has attacked}.
+     * Makes snow golems follow its owner (the player closest to it during its creation) and
+     * target mobs that have attacked its owner and mobs that its owner has attacked.
+     *
+     * @see SnowGolemFollowOwnerGoal
+     * @see SnowGolemOwnerHurtByTargetGoal
+     * @see SnowGolemOwnerHurtTargetGoal
+     * @see OwnableSnowGolem
      */
     ResourceKey<Enchantment> SNOWY_LOYALTY = key("snowy_loyalty");
 
