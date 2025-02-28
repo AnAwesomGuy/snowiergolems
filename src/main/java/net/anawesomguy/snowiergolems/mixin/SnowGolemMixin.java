@@ -23,6 +23,7 @@ import net.anawesomguy.snowiergolems.entity.SnowGolemOwnerHurtByTargetGoal;
 import net.anawesomguy.snowiergolems.entity.SnowGolemOwnerHurtTargetGoal;
 import net.anawesomguy.snowiergolems.util.ExpiringMemoizedBooleanSupplier;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.InteractionHand;
@@ -42,6 +43,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3d;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
@@ -51,6 +53,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import java.util.UUID;
 import java.util.function.BooleanSupplier;
 
 @Mixin(SnowGolem.class)
@@ -64,10 +67,37 @@ public abstract class SnowGolemMixin extends AbstractGolem implements OwnableSno
     @Unique
     private static final EnchantmentGetter HEAT_RESIST_ENCHANT = new EnchantmentGetter(GolemEnchantments.HEAT_RESISTANT);
 
+    @Unique @Nullable
+    private UUID ownerUuid;
+
     @SuppressWarnings("DataFlowIssue")
     private SnowGolemMixin() {
         super(null, null);
         throw new AssertionError();
+    }
+
+    @Override
+    public void snowiergolems$setOwner(@Nullable UUID uuid) {
+        ownerUuid = uuid;
+    }
+
+    @Nullable
+    @Override
+    public UUID getOwnerUUID() {
+        return ownerUuid;
+    }
+
+    @Inject(method = "addAdditionalSaveData", at = @At("RETURN"))
+    public void addOwnerToSaveData(CompoundTag compound, CallbackInfo ci) {
+        UUID uuid = ownerUuid;
+        if (uuid != null)
+            compound.putUUID(NBT_TAG_KEY, uuid);
+    }
+
+    @Inject(method = "readAdditionalSaveData", at = @At("RETURN"))
+    public void readOwnerFromSaveData(CompoundTag compound, CallbackInfo ci) {
+        if (compound.hasUUID(NBT_TAG_KEY))
+            ownerUuid = compound.getUUID(NBT_TAG_KEY);
     }
 
     @ModifyReturnValue(method = "createAttributes", at = @At("RETURN"))

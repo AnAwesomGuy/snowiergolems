@@ -10,7 +10,9 @@ import java.util.UUID;
 
 @NonExtendable
 public interface OwnableSnowGolem extends OwnableEntity {
-    void snowiergolems$setOwner(UUID uuid);
+    String NBT_TAG_KEY = "snowiergolems:owner";
+
+    void snowiergolems$setOwner(@Nullable UUID uuid);
 
     default void snowiergolems$setOwner(@Nullable LivingEntity entity) {
         if (entity != null)
