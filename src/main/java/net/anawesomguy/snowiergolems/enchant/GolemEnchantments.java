@@ -2,18 +2,25 @@ package net.anawesomguy.snowiergolems.enchant;
 
 import net.anawesomguy.snowiergolems.SnowierGolems;
 import net.anawesomguy.snowiergolems.data.EnchantmentDatagen;
+import net.anawesomguy.snowiergolems.entity.SnowGolemFollowOwnerGoal;
+import net.anawesomguy.snowiergolems.entity.SnowGolemOwnerHurtTargetGoal;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.BiomeTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.Attribute.Sentiment;
 import net.minecraft.world.entity.ai.attributes.RangedAttribute;
+import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
+import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
+import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.Enchantments;
 
 import static net.anawesomguy.snowiergolems.SnowierGolems.id;
 
@@ -32,10 +39,41 @@ public interface GolemEnchantments {
 
     TagKey<Item> GOLEM_HEAD_ENCHANTABLE = itemTag("enchantable/golem_head");
 
+    /**
+     * Increases the accuracy of the snow golem's snowballs.
+     * (3 per level for three levels, base is -10.5)
+     *
+     * @see #PROJECTILE_ACCURACY
+     */
     ResourceKey<Enchantment> ACCURACY = key("accuracy");
+    /**
+     * Makes snow golems aggressive.
+     * <ul>
+     *     <li> default: targets only {@link Enemy}s
+     *     <li> level 1: {@linkplain HurtByTargetGoal targets those that attack it}
+     *     <li> level 2: targets those that attack it and {@linkplain HurtByTargetGoal#setAlertOthers alerts others} to do so
+     *     <li> level 3: automatically {@linkplain NearestAttackableTargetGoal targets everything} but its owner
+     * </ul>
+     */
     ResourceKey<Enchantment> AGGRESSIVE = key("aggressive");
+    /**
+     * Makes the snow golem's projectile give "frost" (the powdered snow effect) when it hits an entity.
+     * <p>
+     * Gives a base of 1.3 seconds plus 1 second per level after the first.
+     * <p>
+     * Incompatible with {@link Enchantments#FLAME}.
+     *
+     * @see FreezeEffect
+     */
     ResourceKey<Enchantment> FROST = key("frost");
+    /**
+     * Makes snow golems resistant to {@linkplain BiomeTags#SNOW_GOLEM_MELTS "hot" biomes}.
+     */
     ResourceKey<Enchantment> HEAT_RESISTANT = key("heat_resistance");
+    /**
+     * Makes snow golems {@linkplain SnowGolemFollowOwnerGoal follow} its owner (the player closest to it during its creation) and
+     * target mobs that have {@linkplain SnowGolemOwnerHurtTargetGoal attacked its owner} and mobs that its {@linkplain SnowGolemOwnerHurtTargetGoal owner has attacked}.
+     */
     ResourceKey<Enchantment> SNOWY_LOYALTY = key("snowy_loyalty");
 
     static ResourceKey<Enchantment> key(String path) {
