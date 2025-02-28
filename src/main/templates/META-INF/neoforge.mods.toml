@@ -13,7 +13,7 @@ loaderVersion="${loader_version_range}" #mandatory
 license="${mod_license}"
 
 # A URL to refer people to when problems occur with this mod
-issueTrackerURL="https://github.com/AnAwesomGuy/snowiergolems" #optional
+issueTrackerURL="${github_url}" #optional
 
 # A list of mods - how many allowed here is determined by the individual mod loader
 [[mods]] #mandatory
@@ -31,7 +31,7 @@ displayName="${mod_name}" #mandatory
 #updateJSONURL="https://change.me.example.invalid/updates.json" #optional
 
 # A URL for the "homepage" for this mod, displayed in the mod UI
-displayURL="https://modrinth.com/mod/snowiergolems" #optional
+displayURL="http://modrinth.com/mod/${modrinth_id}" #optional
 
 # A file name (in the root of the mod JAR) containing a logo for display
 #logoFile="${mod_id}.png" #optional

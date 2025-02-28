@@ -6,34 +6,50 @@ import net.anawesomguy.snowiergolems.enchant.FreezeEffect;
 import net.anawesomguy.snowiergolems.entity.EnchantedSnowball;
 import net.anawesomguy.snowiergolems.item.GolemHeadItem;
 import net.anawesomguy.snowiergolems.item.GolemTomeItem;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.dispenser.BlockSource;
+import net.minecraft.core.dispenser.OptionalDispenseItemBehavior;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
+import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.component.ItemAttributeModifiers;
 import net.minecraft.world.item.enchantment.ItemEnchantments;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.DispenserBlock;
+import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.entity.BlockEntityType.Builder;
+import net.minecraft.world.level.gameevent.GameEvent;
+import net.minecraft.world.level.material.MapColor;
+import net.minecraft.world.level.material.PushReaction;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 import net.neoforged.neoforge.registries.RegisterEvent;
 
 import static net.anawesomguy.snowiergolems.SnowierGolems.id;
 
-@SuppressWarnings("deprecation")
 public final class GolemObjects {
     private GolemObjects() {
         throw new AssertionError();
     }
 
     public static final ResourceLocation GOLEM_HEAD_ID = id("golem_head");
-    public static final GolemHeadBlock GOLEM_HEAD = new GolemHeadBlock(Block.Properties.ofLegacyCopy(Blocks.CARVED_PUMPKIN));
+    public static final GolemHeadBlock GOLEM_HEAD =
+        new GolemHeadBlock(Block.Properties.of() // copied from carved pumpkin
+                                           .mapColor(MapColor.COLOR_ORANGE)
+                                           .strength(1F)
+                                           .sound(SoundType.WOOD)
+                                           .isValidSpawn(Blocks::always)
+                                           .pushReaction(PushReaction.DESTROY));
     public static final BlockItem GOLEM_HEAD_ITEM = new GolemHeadItem(
         GOLEM_HEAD,
         new Item.Properties().stacksTo(1)
@@ -88,5 +104,27 @@ public final class GolemObjects {
         if (event.getTabKey() == CreativeModeTabs.INGREDIENTS) {
             event.accept(GOLEM_TOME);
         }
+    }
+
+    static {
+        DispenserBlock.registerBehavior(GOLEM_HEAD_ITEM, new OptionalDispenseItemBehavior() {
+            @Override
+            protected ItemStack execute(BlockSource source, ItemStack stack) {
+                Level level = source.level();
+                BlockPos pos = source.pos().relative(source.state().getValue(DispenserBlock.FACING));
+                GolemHeadBlock golemHead = GOLEM_HEAD;
+                if (level.isEmptyBlock(pos) && golemHead.canSpawnGolem(level, pos)) {
+                    if (!level.isClientSide) {
+                        level.setBlock(pos, golemHead.defaultBlockState(), 2 | 1);
+                        level.gameEvent(null, GameEvent.BLOCK_PLACE, pos);
+                    }
+
+                    stack.shrink(1);
+                    this.setSuccess(true);
+                } else
+                    this.setSuccess(ArmorItem.dispenseArmor(source, stack));
+                return stack;
+            }
+        });
     }
 }

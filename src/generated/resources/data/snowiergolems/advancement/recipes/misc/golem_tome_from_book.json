@@ -1,0 +1,36 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_required": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "minecraft:carved_pumpkin",
+              "minecraft:snowball",
+              "minecraft:book"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "snowiergolems:golem_tome_from_book"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_required"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "snowiergolems:golem_tome_from_book"
+    ]
+  }
+}

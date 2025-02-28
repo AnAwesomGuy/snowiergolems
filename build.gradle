@@ -48,6 +48,7 @@ neoForge {
             // Comma-separated list of namespaces to load gametests from. Empty = all namespaces.
             systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
 
+            systemProperty 'mixin.debug.verbose', 'true'
             systemProperty 'mixin.debug.export', 'true'
         }
 
@@ -55,6 +56,9 @@ neoForge {
             server()
             programArgument '--nogui'
             systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
+
+            systemProperty 'mixin.debug.verbose', 'true'
+            systemProperty 'mixin.debug.export', 'true'
         }
 
         // This run config launches GameTestServer and runs all registered gametests, then exits.
@@ -157,7 +161,9 @@ var generateModMetadata = tasks.register("generateModMetadata", ProcessResources
             mod_license            : mod_license,
             mod_version            : mod_version,
             mod_authors            : mod_authors,
-            mod_description        : mod_description
+            mod_description        : mod_description,
+            github_url             : 'http://github.com/' + github,
+            modrinth_id            : modrinth_id
     ]
     inputs.properties replaceProperties
     expand replaceProperties
@@ -187,7 +193,7 @@ processResources {
         // minify JSONs
         JsonSlurper slurper = new JsonSlurper()
         outputs.files.asFileTree.matching {
-            include '**/*.json', '**/pack.mcmeta'
+            include '**/*.json', '**/*.mcmeta'
         }.each {
             it.text = JsonOutput.toJson slurper.parse(it)
         }
@@ -215,7 +221,7 @@ publishMods {
     file = jar.archiveFile
     additionalFiles.from sourcesJar
     type = STABLE
-    changelog = file("CHANGELOG.md").text
+    changelog = project.changelog
     modLoaders.add 'neoforge'
     displayName = mod_name + mod_version
     version = "$mod_version+$minecraft_version"
@@ -224,6 +230,13 @@ publishMods {
         projectId = modrinth_id
         accessToken = providers.environmentVariable 'MODRINTH_TOKEN'
         minecraftVersions.addAll minecraft_version
+    }
+
+    curseforge {
+        projectId = curseforge_id
+        accessToken = providers.environmentVariable 'CURSEFORGE_TOKEN'
+        minecraftVersions.addAll minecraft_version
+        clientRequired = true
     }
 
     github {

@@ -1,10 +1,11 @@
 {
   "values": [
     "snowiergolems:accuracy",
+    "snowiergolems:aggressive",
     "snowiergolems:frost",
+    "snowiergolems:heat_resistance",
     "minecraft:frost_walker",
     "minecraft:protection",
-    "minecraft:fire_protection",
     "minecraft:multishot",
     "minecraft:power",
     "minecraft:punch",

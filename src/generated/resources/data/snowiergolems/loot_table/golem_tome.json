@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:empty",
+  "pools": [
+    {
+      "bonus_rolls": 0.0,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "functions": [
+            {
+              "function": "minecraft:enchant_with_levels",
+              "levels": {
+                "type": "minecraft:uniform",
+                "max": 30.0,
+                "min": 24.0
+              },
+              "options": "#minecraft:on_random_loot"
+            }
+          ],
+          "name": "snowiergolems:golem_tome"
+        }
+      ],
+      "rolls": 1.0
+    }
+  ],
+  "random_sequence": "snowiergolems:golem_tome"
+}

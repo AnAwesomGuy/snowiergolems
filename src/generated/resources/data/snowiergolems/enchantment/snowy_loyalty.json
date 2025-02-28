@@ -1,0 +1,21 @@
+{
+  "anvil_cost": 5,
+  "description": {
+    "translate": "enchantment.snowiergolems.snowy_loyalty"
+  },
+  "max_cost": {
+    "base": 60,
+    "per_level_above_first": 20
+  },
+  "max_level": 1,
+  "min_cost": {
+    "base": 35,
+    "per_level_above_first": 20
+  },
+  "primary_items": "snowiergolems:golem_head",
+  "slots": [
+    "head"
+  ],
+  "supported_items": "#snowiergolems:enchantable/golem_head",
+  "weight": 4
+}

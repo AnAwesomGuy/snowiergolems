@@ -1,2 +1,3 @@
-// 1.21.1	2025-02-24T13:04:37.9896392	Tags for minecraft:enchantment mod id snowiergolems
-5ab75b2d2a81d8b149b73033a5ff57b50476fe39 data/snowiergolems/tags/enchantment/supports_golem_head.json
+// 1.21.1	2025-02-28T15:45:47.7583575	Tags for minecraft:enchantment mod id snowiergolems
+4f334e667b4982fcb0df7b592e7ca538ad9ab364 data/minecraft/tags/enchantment/in_enchanting_table.json
+4aeef1d73e22a1b3defcedefef2cb64f12ab7b17 data/snowiergolems/tags/enchantment/supports_golem_tome.json

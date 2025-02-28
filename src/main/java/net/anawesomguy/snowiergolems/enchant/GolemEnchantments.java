@@ -1,6 +1,7 @@
 package net.anawesomguy.snowiergolems.enchant;
 
 import net.anawesomguy.snowiergolems.SnowierGolems;
+import net.anawesomguy.snowiergolems.data.EnchantmentDatagen;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -16,6 +17,9 @@ import net.minecraft.world.item.enchantment.Enchantment;
 
 import static net.anawesomguy.snowiergolems.SnowierGolems.id;
 
+/**
+ * @see EnchantmentDatagen
+ */
 public interface GolemEnchantments {
     ResourceLocation PROJECTILE_ACCURACY_ID = SnowierGolems.id("projectile_accuracy");
     Holder.Reference<Attribute> PROJECTILE_ACCURACY = Registry.registerForHolder(
@@ -29,7 +33,10 @@ public interface GolemEnchantments {
     TagKey<Item> GOLEM_HEAD_ENCHANTABLE = itemTag("enchantable/golem_head");
 
     ResourceKey<Enchantment> ACCURACY = key("accuracy");
+    ResourceKey<Enchantment> AGGRESSIVE = key("aggressive");
     ResourceKey<Enchantment> FROST = key("frost");
+    ResourceKey<Enchantment> HEAT_RESISTANT = key("heat_resistance");
+    ResourceKey<Enchantment> SNOWY_LOYALTY = key("snowy_loyalty");
 
     static ResourceKey<Enchantment> key(String path) {
         return ResourceKey.create(Registries.ENCHANTMENT, id(path));

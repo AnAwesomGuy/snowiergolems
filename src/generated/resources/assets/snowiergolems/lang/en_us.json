@@ -3,5 +3,6 @@
   "enchantment.snowiergolems.accuracy": "Accuracy",
   "enchantment.snowiergolems.frost": "Frost",
   "entity.snowiergolems.enchanted_snowball": "Enchanted Snowball",
-  "item.snowiergolems.golem_tome": "Enchanted Golem Tome"
+  "item.snowiergolems.golem_tome": "Enchanted Golem Tome",
+  "snowiergolems.attribute.name.projectile_accuracy": "Projectile Accuracy"
 }
