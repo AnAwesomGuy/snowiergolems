@@ -8,7 +8,7 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.common.EventBusSubscriber.Bus;
-import net.neoforged.neoforge.client.event.EntityRenderersEvent;
+import net.neoforged.neoforge.client.event.EntityRenderersEvent.RegisterRenderers;
 import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
 
@@ -25,7 +25,7 @@ public final class SnowierGolemsClient {
     }
 
     @SubscribeEvent
-    private static void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {
+    private static void registerRenderers(RegisterRenderers event) {
         event.registerBlockEntityRenderer(GolemObjects.GOLEM_HEAD_TYPE, GolemHeadRenderer::new);
         event.registerEntityRenderer(GolemObjects.ENCHANTED_SNOWBALL, ThrownItemRenderer::new);
     }

@@ -15,6 +15,5 @@ public class BlockTagsProvider extends net.neoforged.neoforge.common.data.BlockT
 
     @Override
     protected void addTags(@NotNull Provider provider) {
-
     }
 }

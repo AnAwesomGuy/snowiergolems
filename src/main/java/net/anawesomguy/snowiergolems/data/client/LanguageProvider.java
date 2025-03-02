@@ -1,4 +1,4 @@
-package net.anawesomguy.snowiergolems.data;
+package net.anawesomguy.snowiergolems.data.client;
 
 import net.anawesomguy.snowiergolems.SnowierGolems;
 import net.anawesomguy.snowiergolems.enchant.GolemEnchantments;

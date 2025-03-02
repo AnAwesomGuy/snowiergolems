@@ -1,5 +1,8 @@
 package net.anawesomguy.snowiergolems.data;
 
+import net.anawesomguy.snowiergolems.data.client.BlockStateProvider;
+import net.anawesomguy.snowiergolems.data.client.ItemModelProvider;
+import net.anawesomguy.snowiergolems.data.client.LanguageProvider;
 import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.core.RegistrySetBuilder;
 import net.minecraft.core.registries.Registries;
@@ -42,7 +45,10 @@ public final class SnowierGolemsDatagen {
                      new LootProvider(output, lookupProvider),
                      new LootModifierProvider(output, lookupProvider),
                      new AdvancementProvider(output, lookupProvider, existingFileHelper));
-        addProviders(event.includeClient(), gen, new LanguageProvider(output));
+        addProviders(event.includeClient(), gen,
+                     new LanguageProvider(output),
+                     new BlockStateProvider(output, existingFileHelper),
+                     new ItemModelProvider(output, existingFileHelper));
     }
 
     private static void addProviders(boolean run, DataGenerator gen, DataProvider... providers) {
