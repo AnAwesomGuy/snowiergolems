@@ -28,7 +28,6 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.DispenserBlock;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraft.world.level.block.entity.BlockEntityType.Builder;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.material.PushReaction;
@@ -43,27 +42,26 @@ public final class GolemObjects {
     }
 
     public static final ResourceLocation GOLEM_HEAD_ID = id("golem_head");
-    public static final GolemHeadBlock GOLEM_HEAD =
-        new GolemHeadBlock(Block.Properties.of() // copied from carved pumpkin
-                                           .mapColor(MapColor.COLOR_ORANGE)
-                                           .strength(1F)
-                                           .sound(SoundType.WOOD)
-                                           .isValidSpawn(Blocks::always)
-                                           .pushReaction(PushReaction.DESTROY));
+    public static final GolemHeadBlock GOLEM_HEAD = new GolemHeadBlock(
+        Block.Properties.of() // copied from carved pumpkin
+                        .mapColor(MapColor.COLOR_ORANGE)
+                        .strength(1F)
+                        .sound(SoundType.WOOD)
+                        .isValidSpawn(Blocks::always)
+                        .pushReaction(PushReaction.DESTROY));
     public static final BlockItem GOLEM_HEAD_ITEM = new GolemHeadItem(
         GOLEM_HEAD,
         new Item.Properties().stacksTo(1)
                              .attributes(ItemAttributeModifiers.EMPTY.withTooltip(false)));
     @SuppressWarnings("DataFlowIssue")
     public static final BlockEntityType<GolemHeadBlockEntity> GOLEM_HEAD_TYPE =
-        Builder.of(GolemHeadBlockEntity::new, GOLEM_HEAD).build(null);
+        BlockEntityType.Builder.of(GolemHeadBlockEntity::new, GOLEM_HEAD).build(null);
 
     public static final GolemTomeItem GOLEM_TOME = new GolemTomeItem(
         new Item.Properties().stacksTo(1)
                              .rarity(Rarity.UNCOMMON)
                              .component(DataComponents.STORED_ENCHANTMENTS, ItemEnchantments.EMPTY)
-                             .component(DataComponents.ENCHANTMENT_GLINT_OVERRIDE, true)
-    );
+                             .component(DataComponents.ENCHANTMENT_GLINT_OVERRIDE, true));
 
     public static final ResourceLocation ENCHANTED_SNOWBALL_ID = id("enchanted_snowball");
     public static final EntityType<EnchantedSnowball> ENCHANTED_SNOWBALL =
