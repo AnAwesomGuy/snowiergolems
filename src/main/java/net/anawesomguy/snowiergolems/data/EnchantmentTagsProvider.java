@@ -25,6 +25,7 @@ public class EnchantmentTagsProvider extends net.minecraft.data.tags.Enchantment
                  GolemEnchantments.AGGRESSIVE,
                  GolemEnchantments.FROST,
                  GolemEnchantments.HEAT_RESISTANT,
+                 GolemEnchantments.SNOWY_LOYALTY,
                  FROST_WALKER,
                  PROTECTION,
                  MULTISHOT,
