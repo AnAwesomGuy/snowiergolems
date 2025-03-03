@@ -34,7 +34,7 @@ displayName="${mod_name}" #mandatory
 displayURL="http://modrinth.com/mod/${modrinth_id}" #optional
 
 # A file name (in the root of the mod JAR) containing a logo for display
-#logoFile="${mod_id}.png" #optional
+logoFile="assets/${mod_id}/textures/item/golem_tome.png" #optional
 
 # A text field displayed in the mod UI
 credits="AnAwesomGuy" #optional

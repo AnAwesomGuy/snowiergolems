@@ -230,6 +230,7 @@ publishMods {
     version = "$mod_version+$minecraft_version"
 
     modrinth {
+        description = project.file('README.md').text
         projectId = modrinth_id
         accessToken = providers.environmentVariable 'MODRINTH_TOKEN'
         minecraftVersions.addAll minecraft_version
