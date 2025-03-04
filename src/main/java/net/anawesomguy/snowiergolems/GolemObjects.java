@@ -1,5 +1,6 @@
 package net.anawesomguy.snowiergolems;
 
+import com.mojang.serialization.codecs.PrimitiveCodec;
 import net.anawesomguy.snowiergolems.block.GolemHeadBlock;
 import net.anawesomguy.snowiergolems.block.GolemHeadBlockEntity;
 import net.anawesomguy.snowiergolems.enchant.FreezeEffect;
@@ -7,10 +8,12 @@ import net.anawesomguy.snowiergolems.entity.EnchantedSnowball;
 import net.anawesomguy.snowiergolems.item.GolemHeadItem;
 import net.anawesomguy.snowiergolems.item.GolemTomeItem;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.dispenser.BlockSource;
 import net.minecraft.core.dispenser.OptionalDispenseItemBehavior;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
@@ -71,6 +74,12 @@ public final class GolemObjects {
                           .updateInterval(10)
                           .build(ENCHANTED_SNOWBALL_ID.getPath());
 
+    public static final DataComponentType<Byte> PUMPKIN_FACE =
+        DataComponentType.<Byte>builder()
+                         .networkSynchronized(ByteBufCodecs.BYTE)
+                         .persistent(PrimitiveCodec.BYTE)
+                         .build();
+
     static void register(RegisterEvent event) {
         event.register(Registries.BLOCK, helper -> {
             helper.register(GOLEM_HEAD_ID, GOLEM_HEAD);
@@ -91,6 +100,10 @@ public final class GolemObjects {
 
         event.register(Registries.ENCHANTMENT_ENTITY_EFFECT_TYPE, helper -> {
             helper.register(FreezeEffect.ID, FreezeEffect.CODEC);
+        });
+
+        event.register(Registries.DATA_COMPONENT_TYPE, helper -> {
+            helper.register(id("pumpkin_face"), PUMPKIN_FACE);
         });
     }
 

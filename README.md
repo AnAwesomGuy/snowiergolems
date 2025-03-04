@@ -25,3 +25,7 @@ Allows you to enchant snow golems for new abilities!
 4. Put the snow golem head with the golem tome in an anvil (the golem tome is reusable) to enchant the snow golem head.
 5. Make a new snow golem with your new snow golem head. (or just click it onto a hat-less snow golem)
 6. Watch your snow golem have new abilities!
+
+### Credits:
+- Art: [Startraveler](https://modrinth.com/user/startraveler)
+- Code: me, AnAwesomGuy!

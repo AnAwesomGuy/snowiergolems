@@ -14,14 +14,16 @@ import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsE
 
 @EventBusSubscriber(value = Dist.CLIENT, modid = SnowierGolems.MODID, bus = Bus.MOD)
 public final class SnowierGolemsClient {
-//    @SubscribeEvent
+    public static final IClientItemExtensions GOLEM_HEAD_ITEM_EXTENSIONS = new IClientItemExtensions() {
+        @Override
+        public BlockEntityWithoutLevelRenderer getCustomRenderer() {
+            return GolemHeadItemRenderer.INSTANCE;
+        }
+    };
+
+    @SubscribeEvent
     private static void registerClientExtensions(RegisterClientExtensionsEvent event) {
-        event.registerItem(new IClientItemExtensions() {
-            @Override
-            public BlockEntityWithoutLevelRenderer getCustomRenderer() {
-                return GolemHeadItemRenderer.INSTANCE;
-            }
-        }, GolemObjects.GOLEM_HEAD_ITEM);
+        event.registerItem(GOLEM_HEAD_ITEM_EXTENSIONS, GolemObjects.GOLEM_HEAD_ITEM);
     }
 
     @SubscribeEvent
