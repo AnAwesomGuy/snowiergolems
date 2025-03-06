@@ -12,9 +12,6 @@ import org.spongepowered.asm.mixin.gen.Invoker;
 @Mixin(ItemEnchantments.class)
 public interface ItemEnchantmentsAccessor {
     @Accessor
-    Object2IntOpenHashMap<Holder<Enchantment>> getEnchantments();
-
-    @Accessor
     static Codec<Object2IntOpenHashMap<Holder<Enchantment>>> getLEVELS_CODEC() {
         throw new AssertionError();
     }

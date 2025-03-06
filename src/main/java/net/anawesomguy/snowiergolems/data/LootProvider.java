@@ -69,7 +69,8 @@ public class LootProvider extends LootTableProvider {
                                          .add(LootItem.lootTableItem(golemHead)
                                                       .apply(CopyComponentsFunction.copyComponents(Source.BLOCK_ENTITY)
                                                                                    .include(DataComponents.CUSTOM_NAME)
-                                                                                   .include(DataComponents.ENCHANTMENTS)))
+                                                                                   .include(DataComponents.ENCHANTMENTS)
+                                                                                   .include(GolemObjects.PUMPKIN_FACE)))
                              )
                          ));
         }

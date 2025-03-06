@@ -13,7 +13,6 @@ import com.llamalad7.mixinextras.sugar.ref.LocalFloatRef;
 import com.llamalad7.mixinextras.sugar.ref.LocalRef;
 import com.mojang.math.Axis;
 import net.anawesomguy.snowiergolems.GolemObjects;
-import net.anawesomguy.snowiergolems.enchant.EnchantmentGetter;
 import net.anawesomguy.snowiergolems.enchant.GolemEnchantments;
 import net.anawesomguy.snowiergolems.entity.ConditionalGoal;
 import net.anawesomguy.snowiergolems.entity.EnchantedSnowball;
@@ -56,18 +55,12 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import java.util.UUID;
 import java.util.function.BooleanSupplier;
 
+import static net.anawesomguy.snowiergolems.enchant.EnchantmentCachers.*;
+
 @Mixin(SnowGolem.class)
 public abstract class SnowGolemMixin extends AbstractGolem implements OwnableSnowGolem {
     @Unique
-    private static final EnchantmentGetter AGGRESSIVE_ENCHANT = new EnchantmentGetter(GolemEnchantments.AGGRESSIVE);
-
-    @Unique
-    private static final EnchantmentGetter SNOWY_LOYALTY_ENCHANT = new EnchantmentGetter(GolemEnchantments.SNOWY_LOYALTY);
-
-    @Unique
-    private static final EnchantmentGetter HEAT_RESIST_ENCHANT = new EnchantmentGetter(GolemEnchantments.HEAT_RESISTANT);
-
-    @Unique @Nullable
+    @Nullable
     private UUID ownerUuid;
 
     @SuppressWarnings("DataFlowIssue")
@@ -87,17 +80,9 @@ public abstract class SnowGolemMixin extends AbstractGolem implements OwnableSno
         return ownerUuid;
     }
 
-    @Inject(method = "addAdditionalSaveData", at = @At("RETURN"))
-    public void addOwnerToSaveData(CompoundTag compound, CallbackInfo ci) {
-        UUID uuid = ownerUuid;
-        if (uuid != null)
-            compound.putUUID(NBT_TAG_KEY, uuid);
-    }
-
-    @Inject(method = "readAdditionalSaveData", at = @At("RETURN"))
-    public void readOwnerFromSaveData(CompoundTag compound, CallbackInfo ci) {
-        if (compound.hasUUID(NBT_TAG_KEY))
-            ownerUuid = compound.getUUID(NBT_TAG_KEY);
+    @Unique // maybe better performance? (hopefully, there are fewer checks and stuff)
+    private ItemStack getHeadItem() {
+        return Iterables.get(getArmorSlots(), 3);
     }
 
     @ModifyReturnValue(method = "createAttributes", at = @At("RETURN"))
@@ -110,9 +95,17 @@ public abstract class SnowGolemMixin extends AbstractGolem implements OwnableSno
         this.setItemSlotAndDropWhenKilled(EquipmentSlot.HEAD, Items.CARVED_PUMPKIN.getDefaultInstance());
     }
 
-    @Unique // maybe better performance? (hopefully, there are fewer checks and stuff)
-    private ItemStack getHeadItem() {
-        return Iterables.get(getArmorSlots(), 3);
+    @Inject(method = "addAdditionalSaveData", at = @At("RETURN"))
+    public void addOwnerToSaveData(CompoundTag compound, CallbackInfo ci) {
+        UUID uuid = ownerUuid;
+        if (uuid != null)
+            compound.putUUID(NBT_TAG_KEY, uuid);
+    }
+
+    @Inject(method = "readAdditionalSaveData", at = @At("RETURN"))
+    public void readOwnerFromSaveData(CompoundTag compound, CallbackInfo ci) {
+        if (compound.hasUUID(NBT_TAG_KEY))
+            ownerUuid = compound.getUUID(NBT_TAG_KEY);
     }
 
     @Inject(method = "registerGoals", at = @At("RETURN"))

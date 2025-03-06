@@ -103,7 +103,7 @@ public final class GolemObjects {
         });
 
         event.register(Registries.DATA_COMPONENT_TYPE, helper -> {
-            helper.register(id("pumpkin_face"), PUMPKIN_FACE);
+            helper.register(id("pumpkin_face_id"), PUMPKIN_FACE);
         });
     }
 

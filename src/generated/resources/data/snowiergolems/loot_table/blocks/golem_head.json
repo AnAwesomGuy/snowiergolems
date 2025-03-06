@@ -11,7 +11,8 @@
               "function": "minecraft:copy_components",
               "include": [
                 "minecraft:custom_name",
-                "minecraft:enchantments"
+                "minecraft:enchantments",
+                "snowiergolems:pumpkin_face_id"
               ],
               "source": "block_entity"
             }
