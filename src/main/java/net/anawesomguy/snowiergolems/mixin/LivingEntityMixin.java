@@ -17,6 +17,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(LivingEntity.class)
 public abstract class LivingEntityMixin {
+    private LivingEntityMixin() {
+    }
+
     @Shadow
     public abstract ItemStack getItemBySlot(EquipmentSlot slot);
 

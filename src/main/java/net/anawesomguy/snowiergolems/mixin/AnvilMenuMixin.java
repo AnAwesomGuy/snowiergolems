@@ -15,6 +15,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(AnvilMenu.class)
 public abstract class AnvilMenuMixin {
+    private AnvilMenuMixin() {
+    }
+
     @WrapOperation(method = "onTake", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/ItemStack;shrink(I)V"))
     private void doNotShrinkIfGolemTome(ItemStack stack, int decrement, Operation<Void> original) {
         if (!stack.is(GolemObjects.GOLEM_TOME))
