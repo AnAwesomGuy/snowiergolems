@@ -90,4 +90,25 @@ public abstract class SnowierLanguageProvider extends LanguageProvider {
             add(GolemEnchantments.PROJECTILE_ACCURACY.value().getDescriptionId(), "准确度");
         }
     }
+
+    public static class PortugueseBR extends SnowierLanguageProvider {
+        public PortugueseBR(PackOutput output) {
+            super(output, "pt_br");
+        }
+
+        @Override
+        protected void addTranslations() {
+            add(GOLEM_TOME, "Tomo dos golems encantado");
+            add(GOLEM_HAT, "Chápeu de Golem de neve");
+            add(ENCHANTED_SNOWBALL, "Bola de neve encantada");
+
+            add(GolemEnchantments.ACCURACY, "Precisão");
+            add(GolemEnchantments.AGGRESSIVE, "Agressivo");
+            add(GolemEnchantments.FROST, "Congelamento");
+            add(GolemEnchantments.HEAT_RESISTANT, "Resistência ao calor");
+            add(GolemEnchantments.SNOWY_LOYALTY, "Lealdade nevada");
+
+            add(GolemEnchantments.PROJECTILE_ACCURACY.value().getDescriptionId(), "Precisão de Projétil");
+        }
+    }
 }
