@@ -60,11 +60,18 @@ public final class GolemObjects {
     public static final BlockEntityType<GolemHeadBlockEntity> GOLEM_HEAD_TYPE =
         BlockEntityType.Builder.of(GolemHeadBlockEntity::new, GOLEM_HEAD).build(null);
 
+
+    public static final DataComponentType<Byte> PUMPKIN_FACE =
+        DataComponentType.<Byte>builder()
+                         .networkSynchronized(ByteBufCodecs.BYTE)
+                         .persistent(PrimitiveCodec.BYTE)
+                         .build();
     public static final GolemTomeItem GOLEM_TOME = new GolemTomeItem(
         new Item.Properties().stacksTo(1)
                              .rarity(Rarity.UNCOMMON)
                              .component(DataComponents.STORED_ENCHANTMENTS, ItemEnchantments.EMPTY)
-                             .component(DataComponents.ENCHANTMENT_GLINT_OVERRIDE, true));
+                             .component(DataComponents.ENCHANTMENT_GLINT_OVERRIDE, true)
+                             .component(PUMPKIN_FACE, (byte)-1));
 
     public static final ResourceLocation ENCHANTED_SNOWBALL_ID = id("enchanted_snowball");
     public static final EntityType<EnchantedSnowball> ENCHANTED_SNOWBALL =
@@ -73,12 +80,6 @@ public final class GolemObjects {
                           .clientTrackingRange(4)
                           .updateInterval(10)
                           .build(ENCHANTED_SNOWBALL_ID.getPath());
-
-    public static final DataComponentType<Byte> PUMPKIN_FACE =
-        DataComponentType.<Byte>builder()
-                         .networkSynchronized(ByteBufCodecs.BYTE)
-                         .persistent(PrimitiveCodec.BYTE)
-                         .build();
 
     static void register(RegisterEvent event) {
         event.register(Registries.BLOCK, helper -> {

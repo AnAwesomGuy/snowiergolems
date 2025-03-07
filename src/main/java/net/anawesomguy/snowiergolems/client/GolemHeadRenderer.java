@@ -24,7 +24,6 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider.Con
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.level.Level;
 
@@ -119,7 +118,7 @@ public class GolemHeadRenderer implements BlockEntityRenderer<GolemHeadBlockEnti
             light = LevelRenderer.getLightColor(level, golemHead.getBlockState(), golemHead.getBlockPos().above());
 
         Function<ResourceLocation, RenderType> entitySolid = RenderType::entitySolid;
-        int faceId = Byte.toUnsignedInt(golemHead.getOrCreateFaceId(level == null ? RandomSource.create() : level.random));
+        int faceId = Byte.toUnsignedInt(golemHead.getOrCreateFaceId());
         Material face = ALL_FACES.get(faceId);
         if (face == null) {
             SnowierGolems.LOGGER.error("Invalid face id {}! (wtf?)", faceId);
@@ -144,6 +143,4 @@ public class GolemHeadRenderer implements BlockEntityRenderer<GolemHeadBlockEnti
 
         stack.mulPose(Axis.YP.rotationDegrees(golemHead.getBlockState().getValue(GolemHeadBlock.FACING).toYRot()));
     }
-
-
 }

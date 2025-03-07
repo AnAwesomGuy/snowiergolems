@@ -7,6 +7,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.Holder.Reference;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.entity.Entity;
@@ -31,21 +32,37 @@ public final class HolderCacher<T> implements Function<Object, Reference<T>>, Su
     }
 
     /**
-     * The parameter {@code obj} must be an {@link Entity}, {@link LevelReader}, {@link MinecraftServer}, {@link SharedSuggestionProvider}, {@link HolderLookup.Provider}, or {@link HolderGetter}. <br>
-     * If it is none, a {@link HolderGetter} will be attempted to be resolved in a manner similar to {@link CommonHooks#resolveLookup}. <br>
-     * If that also fails, {@code null} will be returned.
-     *
-     * @param obj an object which you can retrieve a {@link Holder} from.
-     * @return a {@link Holder} representing {@link #key}, or {@code null} if one cannot be resolved.
+     * @see #getAsHolder
      */
-    @SuppressWarnings("unchecked")
     @UnknownNullability
     @Override
     public Reference<T> apply(Object obj) {
         Reference<T> t = tReference;
         if (t != null)
             return t;
+        if ((t = getAsHolder(key, obj)) != null)
+            tReference = t;
+        return t;
+    }
 
+    @Override
+    @Nullable
+    public Reference<T> get() {
+        return tReference;
+    }
+
+    /**
+     * The parameter {@code obj} must be an {@link Entity}, {@link LevelReader}, {@link MinecraftServer}, {@link SharedSuggestionProvider}, {@link HolderLookup.Provider}, or {@link HolderGetter}. <br>
+     * If it is none, a {@link HolderGetter} will be attempted to be resolved in a manner similar to {@link CommonHooks#resolveLookup}. <br>
+     * If that also fails, {@code null} will be returned.
+     *
+     * @param key the key representing the holder to retrieve.
+     * @param obj an object which you can retrieve a {@link Holder} from.
+     * @return a {@link Holder} representing {@link #key}, or {@code null} if one cannot be resolved.
+     */
+    @SuppressWarnings("unchecked")
+    @UnknownNullability
+    public static <T> Reference<T> getAsHolder(ResourceKey<T> key, Object obj) {
         return (
             obj instanceof HolderGetter<?> ? Optional.of((HolderGetter<T>)obj) : Optional.ofNullable(switch (obj) {
                 case Entity entity -> entity.registryAccess();
@@ -53,6 +70,7 @@ public final class HolderCacher<T> implements Function<Object, Reference<T>>, Su
                 case MinecraftServer server -> server.registryAccess();
                 case SharedSuggestionProvider suggestionProvider -> suggestionProvider.registryAccess();
                 case HolderLookup.Provider provider -> provider;
+                case Reference<?> reference -> (RegistryAccess)reference.unwrapLookup();
                 // could probably put more but im *lazy*
                 case null, default -> {
                     // attempt to resolve
@@ -68,13 +86,6 @@ public final class HolderCacher<T> implements Function<Object, Reference<T>>, Su
                 }
             }).flatMap(access -> access.lookup(key.registryKey()))
         ).flatMap(getter -> getter.get(key))
-         .map(holder -> tReference = holder)
          .orElse(null);
-    }
-
-    @Override
-    @Nullable
-    public Reference<T> get() {
-        return tReference;
     }
 }
