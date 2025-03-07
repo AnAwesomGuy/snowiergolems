@@ -1,4 +1,4 @@
-// 1.21.1	2025-02-26T13:31:07.440204	Global Loot Modifiers : snowiergolems
-5caa4dcf993ccb6b6e1c8a86190ce8451b348ba2 data/neoforge/loot_modifiers/global_loot_modifiers.json
+// 1.21.1	2025-03-07T16:44:34.2259133	Global Loot Modifiers : snowiergolems
+f8cc0aa5e598d5adfad76694c9e3095063b3fff4 data/neoforge/loot_modifiers/global_loot_modifiers.json
 cabb885def1bd92f1b88729a9f6d862c45b12933 data/snowiergolems/loot_modifiers/add_enchanted_golem_tomes.json
-1979544647d09090ae498aa21081d280d2b10c15 data/snowiergolems/loot_modifiers/add_golem_head.json
+1979544647d09090ae498aa21081d280d2b10c15 data/snowiergolems/loot_modifiers/add_golem_hat.json

@@ -39,7 +39,7 @@ public interface GolemEnchantments {
             .setSentiment(Sentiment.POSITIVE)
     );
 
-    TagKey<Item> GOLEM_HEAD_ENCHANTABLE = itemTag("enchantable/golem_head");
+    TagKey<Item> GOLEM_HAT_ENCHANTABLE = itemTag("enchantable/golem_hat");
 
     /**
      * Increases the accuracy of the snow golem's snowballs.

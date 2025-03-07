@@ -13,8 +13,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.HitResult;
 import org.jetbrains.annotations.Nullable;
 
-public class GolemHeadBlock extends CarvedPumpkinBlock implements EntityBlock {
-    public GolemHeadBlock(Properties properties) {
+public class GolemHatBlock extends CarvedPumpkinBlock implements EntityBlock {
+    public GolemHatBlock(Properties properties) {
         super(properties);
     }
 
@@ -25,7 +25,7 @@ public class GolemHeadBlock extends CarvedPumpkinBlock implements EntityBlock {
 
     @Override
     public ItemStack getCloneItemStack(BlockState state, HitResult target, LevelReader level, BlockPos pos, Player player) {
-        return level.getBlockEntity(pos) instanceof GolemHeadBlockEntity entity ?
+        return level.getBlockEntity(pos) instanceof GolemHatBlockEntity entity ?
             entity.getAsStack() :
             super.getCloneItemStack(state, target, level, pos, player);
     }
@@ -33,7 +33,7 @@ public class GolemHeadBlock extends CarvedPumpkinBlock implements EntityBlock {
     @Nullable
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-        return new GolemHeadBlockEntity(pos, state);
+        return new GolemHatBlockEntity(pos, state);
     }
 
     @Override

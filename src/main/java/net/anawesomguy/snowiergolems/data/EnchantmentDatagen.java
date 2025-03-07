@@ -17,7 +17,7 @@ import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.item.enchantment.LevelBasedValue;
 import net.minecraft.world.item.enchantment.effects.EnchantmentAttributeEffect;
 
-import static net.anawesomguy.snowiergolems.GolemObjects.GOLEM_HEAD_ITEM;
+import static net.anawesomguy.snowiergolems.GolemObjects.GOLEM_HAT_ITEM;
 import static net.anawesomguy.snowiergolems.SnowierGolems.id;
 import static net.minecraft.world.item.enchantment.Enchantment.*;
 
@@ -27,14 +27,14 @@ public final class EnchantmentDatagen {
         HolderGetter<Item> itemLookup = ctx.lookup(Registries.ITEM);
         HolderGetter<Enchantment> enchantLookup = ctx.lookup(Registries.ENCHANTMENT);
 
-        HolderSet<Item> golemHeadEnchantable = itemLookup.getOrThrow(GolemEnchantments.GOLEM_HEAD_ENCHANTABLE);
-        HolderSet<Item> golemHead = HolderSet.direct(GOLEM_HEAD_ITEM.builtInRegistryHolder());
+        HolderSet<Item> golemHatEnchantable = itemLookup.getOrThrow(GolemEnchantments.GOLEM_HAT_ENCHANTABLE);
+        HolderSet<Item> golemHat = HolderSet.direct(GOLEM_HAT_ITEM.builtInRegistryHolder());
 
         register(ctx,
                  GolemEnchantments.ACCURACY,
                  enchantment(definition(
-                     golemHeadEnchantable,
-                     golemHead,
+                     golemHatEnchantable,
+                     golemHat,
                      4,
                      3,
                      dynamicCost(15, 15),
@@ -55,8 +55,8 @@ public final class EnchantmentDatagen {
         register(ctx,
                  GolemEnchantments.AGGRESSIVE,
                  enchantment(definition(
-                     golemHeadEnchantable,
-                     golemHead,
+                     golemHatEnchantable,
+                     golemHat,
                      4,
                      3,
                      dynamicCost(15, 15),
@@ -69,8 +69,8 @@ public final class EnchantmentDatagen {
         register(ctx,
                  GolemEnchantments.FROST,
                  enchantment(definition(
-                     golemHeadEnchantable,
-                     golemHead,
+                     golemHatEnchantable,
+                     golemHat,
                      3,
                      4,
                      dynamicCost(20, 15),
@@ -88,8 +88,8 @@ public final class EnchantmentDatagen {
         register(ctx,
                  GolemEnchantments.HEAT_RESISTANT,
                  enchantment(definition(
-                     golemHeadEnchantable,
-                     golemHead,
+                     golemHatEnchantable,
+                     golemHat,
                      4,
                      1,
                      dynamicCost(25, 15),
@@ -102,8 +102,8 @@ public final class EnchantmentDatagen {
         register(ctx,
                  GolemEnchantments.SNOWY_LOYALTY,
                  enchantment(definition(
-                     golemHeadEnchantable,
-                     golemHead,
+                     golemHatEnchantable,
+                     golemHat,
                      4,
                      1,
                      dynamicCost(35, 20),

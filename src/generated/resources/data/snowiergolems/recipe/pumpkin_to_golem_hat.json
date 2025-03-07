@@ -3,11 +3,14 @@
   "category": "misc",
   "ingredients": [
     {
-      "item": "snowiergolems:golem_head"
+      "item": "minecraft:carved_pumpkin"
+    },
+    {
+      "item": "minecraft:snowball"
     }
   ],
   "result": {
     "count": 1,
-    "id": "minecraft:carved_pumpkin"
+    "id": "snowiergolems:golem_hat"
   }
 }

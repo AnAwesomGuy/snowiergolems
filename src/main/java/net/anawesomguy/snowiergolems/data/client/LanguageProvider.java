@@ -18,7 +18,7 @@ public class LanguageProvider extends net.neoforged.neoforge.common.data.Languag
     protected void addTranslations() {
         add(ENCHANTED_SNOWBALL, "Enchanted Snowball");
         add(GOLEM_TOME, "Enchanted Golem Tome");
-        add(GOLEM_HEAD, "Snow Golem Head");
+        add(GOLEM_HAT, "Snow Golem Hat");
         add(GolemEnchantments.ACCURACY, "Accuracy");
         add(GolemEnchantments.FROST, "Frost");
         add(GolemEnchantments.PROJECTILE_ACCURACY.value().getDescriptionId(), "Projectile Accuracy");

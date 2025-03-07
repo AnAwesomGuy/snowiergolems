@@ -1,7 +1,7 @@
 {
   "entries": [
-    "snowiergolems:add_golem_head",
-    "snowiergolems:add_enchanted_golem_tomes"
+    "snowiergolems:add_enchanted_golem_tomes",
+    "snowiergolems:add_golem_hat"
   ],
   "replace": false
 }

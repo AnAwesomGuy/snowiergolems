@@ -24,15 +24,15 @@ public class RecipeProvider extends net.minecraft.data.recipes.RecipeProvider {
         super.buildRecipes(output, holderLookup);
 
         ShapelessRecipeBuilder.shapeless(MISC, CARVED_PUMPKIN)
-                              .requires(GOLEM_HEAD_ITEM)
-                              .unlockedBy("has_golem_head", has(GOLEM_HEAD))
-                              .save(output, id("golem_head_to_pumpkin"));
-        ShapelessRecipeBuilder.shapeless(MISC, GOLEM_HEAD_ITEM)
+                              .requires(GOLEM_HAT_ITEM)
+                              .unlockedBy("has_golem_hat", has(GOLEM_HAT))
+                              .save(output, id("golem_hat_to_pumpkin"));
+        ShapelessRecipeBuilder.shapeless(MISC, GOLEM_HAT_ITEM)
                               .requires(CARVED_PUMPKIN)
                               .requires(SNOWBALL)
                               .unlockedBy("has_snowball_and_pumpkin",
                                           inventoryTrigger(ItemPredicate.Builder.item().of(CARVED_PUMPKIN, SNOWBALL)))
-                              .save(output, id("pumpkin_to_golem_head"));
+                              .save(output, id("pumpkin_to_golem_hat"));
         ShapelessRecipeBuilder.shapeless(MISC, GOLEM_TOME)
                               .requires(BOOK)
                               .requires(SNOWBALL)

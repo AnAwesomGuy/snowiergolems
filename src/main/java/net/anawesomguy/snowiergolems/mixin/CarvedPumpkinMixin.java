@@ -6,8 +6,8 @@ import com.llamalad7.mixinextras.sugar.Share;
 import com.llamalad7.mixinextras.sugar.ref.LocalDoubleRef;
 import com.llamalad7.mixinextras.sugar.ref.LocalRef;
 import net.anawesomguy.snowiergolems.GolemObjects;
-import net.anawesomguy.snowiergolems.block.GolemHeadBlock;
-import net.anawesomguy.snowiergolems.block.GolemHeadBlockEntity;
+import net.anawesomguy.snowiergolems.block.GolemHatBlockEntity;
+import net.anawesomguy.snowiergolems.block.GolemHatBlock;
 import net.anawesomguy.snowiergolems.entity.OwnableSnowGolem;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
@@ -35,7 +35,7 @@ public abstract class CarvedPumpkinMixin {
 
     @Inject(method = "trySpawnGolem", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/CarvedPumpkinBlock;getOrCreateIronGolemFull()Lnet/minecraft/world/level/block/state/pattern/BlockPattern;"), cancellable = true)
     private void noIronGolem(Level level, BlockPos pos, CallbackInfo ci) {
-        if ((Object)this instanceof GolemHeadBlock)
+        if ((Object)this instanceof GolemHatBlock)
             ci.cancel();
     }
 
@@ -43,12 +43,12 @@ public abstract class CarvedPumpkinMixin {
     private void addSnowGolemEnchants(Level level, BlockPos pos, CallbackInfo ci, @Local BlockPatternMatch match,
                                       @Local SnowGolem golem) {
         BlockInWorld blockInWorld = match.getBlock(0, 0, 0);
-        if (match.getBlock(0, 0, 0).getState().is(GolemObjects.GOLEM_HEAD)) {
-            BlockEntity golemHead = blockInWorld.getEntity();
-            if (golemHead instanceof GolemHeadBlockEntity golemHeadEntity) {
-                golem.setItemSlot(EquipmentSlot.HEAD, golemHeadEntity.getAsStack());
-                if (golemHeadEntity.hasCustomName())
-                    golem.setCustomName(golemHeadEntity.getCustomName());
+        if (match.getBlock(0, 0, 0).getState().is(GolemObjects.GOLEM_HAT)) {
+            BlockEntity golemHat = blockInWorld.getEntity();
+            if (golemHat instanceof GolemHatBlockEntity golemHatEntity) {
+                golem.setItemSlot(EquipmentSlot.HEAD, golemHatEntity.getAsStack());
+                if (golemHatEntity.hasCustomName())
+                    golem.setCustomName(golemHatEntity.getCustomName());
             }
         }
     }
@@ -79,7 +79,7 @@ public abstract class CarvedPumpkinMixin {
     }
 
     @ModifyExpressionValue(method = "getOrCreateSnowGolemFull", at = @At(value = "FIELD", target = "Lnet/minecraft/world/level/block/CarvedPumpkinBlock;PUMPKINS_PREDICATE:Ljava/util/function/Predicate;"))
-    private Predicate<BlockState> addGolemHeadAsPumpkin(Predicate<BlockState> original) {
-        return original.or(state -> state != null && state.is(GolemObjects.GOLEM_HEAD));
+    private Predicate<BlockState> addGolemHatAsPumpkin(Predicate<BlockState> original) {
+        return original.or(state -> state != null && state.is(GolemObjects.GOLEM_HAT));
     }
 }

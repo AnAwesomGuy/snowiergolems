@@ -12,7 +12,7 @@ public class BlockStateProvider extends net.neoforged.neoforge.client.model.gene
 
     @Override
     protected void registerStatesAndModels() {
-        simpleBlockWithItem(GolemObjects.GOLEM_HEAD, models().getBuilder(GolemObjects.GOLEM_HEAD_ID.toString())
-                                                             .texture("particle", "minecraft:block/carved_pumpkin"));
+        simpleBlockWithItem(GolemObjects.GOLEM_HAT, models().getBuilder(GolemObjects.GOLEM_HAT_ID.toString())
+                                                            .texture("particle", "minecraft:block/carved_pumpkin"));
     }
 }

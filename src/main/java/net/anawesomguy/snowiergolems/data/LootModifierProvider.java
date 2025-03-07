@@ -24,7 +24,7 @@ public class LootModifierProvider extends GlobalLootModifierProvider {
                 new LootItemCondition[]{tableIdCondition("chests/igloo_chest")},
                 GolemTomeLoot.GOLEM_TOME_TABLE
             ));
-        add("add_golem_head",
+        add("add_golem_hat",
             new AddTableLootModifier(
                 new LootItemCondition[]{tableIdCondition("chests/village/village_snowy_house")},
                 GolemTomeLoot.GOLEM_TOME_TABLE

@@ -1,4 +1,4 @@
-// 1.21.1	2025-03-06T19:57:05.1362515	Loot Tables
-e3ccf98257febe549d1981ea1532032fa3e3db3b data/snowiergolems/loot_table/blocks/golem_head.json
-48c4166a80f368d9ac9b5ddefa140a4d1ac768de data/snowiergolems/loot_table/golem_head.json
+// 1.21.1	2025-03-07T16:44:34.2459323	Loot Tables
+244e1441e4f92170e38b506273069f6774465049 data/snowiergolems/loot_table/blocks/golem_hat.json
+8ac747ddd4a6d4e4e082cb18f0378e0751d18cd0 data/snowiergolems/loot_table/golem_hat.json
 e1a982c4f39359060a4038626dc1f0b27bc0a861 data/snowiergolems/loot_table/golem_tome.json

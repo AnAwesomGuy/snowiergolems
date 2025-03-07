@@ -68,7 +68,7 @@ public class EnchantedSnowball extends Snowball {
     public EnchantedSnowball(Level level, LivingEntity shooter, ItemStack shotFrom) {
         this(level, shooter.getX(), shooter.getEyeY() - 0.1F, shooter.getZ(), shotFrom);
         setOwner(shooter);
-        if (shooter instanceof SnowGolem && shooter.getItemBySlot(EquipmentSlot.HEAD).is(GolemObjects.GOLEM_HEAD_ITEM))
+        if (shooter instanceof SnowGolem && shooter.getItemBySlot(EquipmentSlot.HEAD).is(GolemObjects.GOLEM_HAT_ITEM))
             getOrCreateItemInUse(EquipmentSlot.HEAD);
     }
 

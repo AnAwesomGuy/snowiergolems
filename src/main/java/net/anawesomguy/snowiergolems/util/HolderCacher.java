@@ -1,7 +1,6 @@
 package net.anawesomguy.snowiergolems.util;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Holder.Reference;
@@ -78,7 +77,7 @@ public final class HolderCacher<T> implements Function<Object, Reference<T>>, Su
                     if (server != null)
                         yield server.registryAccess();
                     else if (FMLEnvironment.dist.isClient()) {
-                        ClientLevel level = Minecraft.getInstance().level;
+                        LevelReader level = Minecraft.getInstance().level;
                         if (level != null)
                             yield level.registryAccess();
                     }

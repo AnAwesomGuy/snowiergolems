@@ -17,11 +17,11 @@
               "source": "block_entity"
             }
           ],
-          "name": "snowiergolems:golem_head"
+          "name": "snowiergolems:golem_hat"
         }
       ],
       "rolls": 1.0
     }
   ],
-  "random_sequence": "snowiergolems:blocks/golem_head"
+  "random_sequence": "snowiergolems:blocks/golem_hat"
 }

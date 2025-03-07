@@ -1,11 +1,11 @@
 package net.anawesomguy.snowiergolems;
 
 import com.mojang.serialization.codecs.PrimitiveCodec;
-import net.anawesomguy.snowiergolems.block.GolemHeadBlock;
-import net.anawesomguy.snowiergolems.block.GolemHeadBlockEntity;
+import net.anawesomguy.snowiergolems.block.GolemHatBlock;
+import net.anawesomguy.snowiergolems.block.GolemHatBlockEntity;
 import net.anawesomguy.snowiergolems.enchant.FreezeEffect;
 import net.anawesomguy.snowiergolems.entity.EnchantedSnowball;
-import net.anawesomguy.snowiergolems.item.GolemHeadItem;
+import net.anawesomguy.snowiergolems.item.GolemHatItem;
 import net.anawesomguy.snowiergolems.item.GolemTomeItem;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponentType;
@@ -44,21 +44,21 @@ public final class GolemObjects {
         throw new AssertionError();
     }
 
-    public static final ResourceLocation GOLEM_HEAD_ID = id("golem_head");
-    public static final GolemHeadBlock GOLEM_HEAD = new GolemHeadBlock(
+    public static final ResourceLocation GOLEM_HAT_ID = id("golem_hat");
+    public static final GolemHatBlock GOLEM_HAT = new GolemHatBlock(
         Block.Properties.of() // copied from carved pumpkin
                         .mapColor(MapColor.COLOR_ORANGE)
                         .strength(1F)
                         .sound(SoundType.WOOD)
                         .isValidSpawn(Blocks::always)
                         .pushReaction(PushReaction.DESTROY));
-    public static final BlockItem GOLEM_HEAD_ITEM = new GolemHeadItem(
-        GOLEM_HEAD,
+    public static final BlockItem GOLEM_HAT_ITEM = new GolemHatItem(
+        GOLEM_HAT,
         new Item.Properties().stacksTo(1)
                              .attributes(ItemAttributeModifiers.EMPTY.withTooltip(false)));
     @SuppressWarnings("DataFlowIssue")
-    public static final BlockEntityType<GolemHeadBlockEntity> GOLEM_HEAD_TYPE =
-        BlockEntityType.Builder.of(GolemHeadBlockEntity::new, GOLEM_HEAD).build(null);
+    public static final BlockEntityType<GolemHatBlockEntity> GOLEM_HAT_TYPE =
+        BlockEntityType.Builder.of(GolemHatBlockEntity::new, GOLEM_HAT).build(null);
 
 
     public static final DataComponentType<Byte> PUMPKIN_FACE =
@@ -83,16 +83,16 @@ public final class GolemObjects {
 
     static void register(RegisterEvent event) {
         event.register(Registries.BLOCK, helper -> {
-            helper.register(GOLEM_HEAD_ID, GOLEM_HEAD);
+            helper.register(GOLEM_HAT_ID, GOLEM_HAT);
         });
 
         event.register(Registries.ITEM, helper -> {
-            helper.register(GOLEM_HEAD_ID, GOLEM_HEAD_ITEM);
+            helper.register(GOLEM_HAT_ID, GOLEM_HAT_ITEM);
             helper.register(id("golem_tome"), GOLEM_TOME);
         });
 
         event.register(Registries.BLOCK_ENTITY_TYPE, helper -> {
-            helper.register(GOLEM_HEAD_ID, GOLEM_HEAD_TYPE);
+            helper.register(GOLEM_HAT_ID, GOLEM_HAT_TYPE);
         });
 
         event.register(Registries.ENTITY_TYPE, helper -> {
@@ -110,7 +110,7 @@ public final class GolemObjects {
 
     static void addToCreativeTabs(BuildCreativeModeTabContentsEvent event) {
         if (event.getTabKey() == CreativeModeTabs.FUNCTIONAL_BLOCKS) {
-            event.accept(GOLEM_HEAD_ITEM);
+            event.accept(GOLEM_HAT_ITEM);
         }
 
         if (event.getTabKey() == CreativeModeTabs.INGREDIENTS) {
@@ -119,15 +119,15 @@ public final class GolemObjects {
     }
 
     static {
-        DispenserBlock.registerBehavior(GOLEM_HEAD_ITEM, new OptionalDispenseItemBehavior() {
+        DispenserBlock.registerBehavior(GOLEM_HAT_ITEM, new OptionalDispenseItemBehavior() {
             @Override
             protected ItemStack execute(BlockSource source, ItemStack stack) {
                 Level level = source.level();
                 BlockPos pos = source.pos().relative(source.state().getValue(DispenserBlock.FACING));
-                GolemHeadBlock golemHead = GOLEM_HEAD;
-                if (level.isEmptyBlock(pos) && golemHead.canSpawnGolem(level, pos)) {
+                GolemHatBlock golemHat = GOLEM_HAT;
+                if (level.isEmptyBlock(pos) && golemHat.canSpawnGolem(level, pos)) {
                     if (!level.isClientSide) {
-                        level.setBlock(pos, golemHead.defaultBlockState(), 2 | 1);
+                        level.setBlock(pos, golemHat.defaultBlockState(), 2 | 1);
                         level.gameEvent(null, GameEvent.BLOCK_PLACE, pos);
                     }
 

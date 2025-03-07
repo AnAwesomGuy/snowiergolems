@@ -1,11 +1,14 @@
 {
   "parent": "minecraft:recipes/root",
   "criteria": {
-    "has_golem_head": {
+    "has_snowball_and_pumpkin": {
       "conditions": {
         "items": [
           {
-            "items": "snowiergolems:golem_head"
+            "items": [
+              "minecraft:carved_pumpkin",
+              "minecraft:snowball"
+            ]
           }
         ]
       },
@@ -13,7 +16,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "snowiergolems:golem_head_to_pumpkin"
+        "recipe": "snowiergolems:pumpkin_to_golem_hat"
       },
       "trigger": "minecraft:recipe_unlocked"
     }
@@ -21,12 +24,12 @@
   "requirements": [
     [
       "has_the_recipe",
-      "has_golem_head"
+      "has_snowball_and_pumpkin"
     ]
   ],
   "rewards": {
     "recipes": [
-      "snowiergolems:golem_head_to_pumpkin"
+      "snowiergolems:pumpkin_to_golem_hat"
     ]
   }
 }

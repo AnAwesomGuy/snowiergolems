@@ -19,8 +19,8 @@ public record FreezeEffect(LevelBasedValue freezeProgress) implements Enchantmen
 
     @Override
     public void apply(ServerLevel level, int lvl, EnchantedItemInUse item, Entity entity, Vec3 origin) {
-        entity.setTicksFrozen(
-            (int)Math.min(entity.getTicksRequiredToFreeze(), (freezeProgress.calculate(lvl) / 20F) + entity.getTicksFrozen()));
+        entity.setTicksFrozen(Math.min(entity.getTicksRequiredToFreeze(),
+                                       (int)(freezeProgress.calculate(lvl) / 20F) + entity.getTicksFrozen()));
     }
 
     @Override

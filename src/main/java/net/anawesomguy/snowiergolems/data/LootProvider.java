@@ -44,7 +44,7 @@ public class LootProvider extends LootTableProvider {
 
     public static class BlockLoot extends BlockLootSubProvider {
         protected BlockLoot(Provider registries) {
-            super(Set.of(GolemObjects.GOLEM_HEAD_ITEM), FeatureFlags.DEFAULT_FLAGS, registries);
+            super(Set.of(GolemObjects.GOLEM_HAT_ITEM), FeatureFlags.DEFAULT_FLAGS, registries);
         }
 
         @Override
@@ -57,16 +57,16 @@ public class LootProvider extends LootTableProvider {
 
         @Override
         protected void generate() {
-            // drop golem head with name and enchants
-            Block golemHead = GolemObjects.GOLEM_HEAD;
-            add(golemHead,
+            // drop golem hat with name and enchants
+            Block golemHat = GolemObjects.GOLEM_HAT;
+            add(golemHat,
                 LootTable.lootTable()
                          .withPool(
                              applyExplosionCondition(
-                                 golemHead,
+                                 golemHat,
                                  LootPool.lootPool()
                                          .setRolls(ConstantValue.exactly(1F))
-                                         .add(LootItem.lootTableItem(golemHead)
+                                         .add(LootItem.lootTableItem(golemHat)
                                                       .apply(CopyComponentsFunction.copyComponents(Source.BLOCK_ENTITY)
                                                                                    .include(DataComponents.CUSTOM_NAME)
                                                                                    .include(DataComponents.ENCHANTMENTS)
@@ -79,8 +79,8 @@ public class LootProvider extends LootTableProvider {
     public record GolemTomeLoot(Provider registries) implements LootTableSubProvider {
         public static final ResourceKey<LootTable> GOLEM_TOME_TABLE =
             ResourceKey.create(Registries.LOOT_TABLE, SnowierGolems.id("golem_tome"));
-        public static final ResourceKey<LootTable> GOLEM_HEAD_TABLE =
-            ResourceKey.create(Registries.LOOT_TABLE, SnowierGolems.id("golem_head"));
+        public static final ResourceKey<LootTable> GOLEM_HAT_TABLE =
+            ResourceKey.create(Registries.LOOT_TABLE, SnowierGolems.id("golem_hat"));
 
         @Override
         public void generate(BiConsumer<ResourceKey<LootTable>, Builder> output) {
@@ -95,11 +95,11 @@ public class LootProvider extends LootTableProvider {
                                                   ))
                                      )));
             output.accept(
-                GOLEM_HEAD_TABLE,
+                GOLEM_HAT_TABLE,
                 LootTable.lootTable()
                          .withPool(
                              LootPool.lootPool()
-                                     .add(LootItem.lootTableItem(GolemObjects.GOLEM_HEAD)))
+                                     .add(LootItem.lootTableItem(GolemObjects.GOLEM_HAT)))
                          .withPool(
                              LootPool.lootPool()
                                      .add(LootItem.lootTableItem(Items.SNOWBALL)

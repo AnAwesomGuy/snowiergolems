@@ -15,26 +15,26 @@ import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsE
 
 @EventBusSubscriber(value = Dist.CLIENT, modid = SnowierGolems.MODID, bus = Bus.MOD)
 public final class SnowierGolemsClient {
-    public static final IClientItemExtensions GOLEM_HEAD_ITEM_EXTENSIONS = new IClientItemExtensions() {
+    public static final IClientItemExtensions GOLEM_HAT_ITEM_EXTENSIONS = new IClientItemExtensions() {
         @Override
         public BlockEntityWithoutLevelRenderer getCustomRenderer() {
-            return GolemHeadItemRenderer.INSTANCE;
+            return GolemHatItemRenderer.INSTANCE;
         }
     };
 
     @SubscribeEvent
     private static void registerClientExtensions(RegisterClientExtensionsEvent event) {
-        event.registerItem(GOLEM_HEAD_ITEM_EXTENSIONS, GolemObjects.GOLEM_HEAD_ITEM);
+        event.registerItem(GOLEM_HAT_ITEM_EXTENSIONS, GolemObjects.GOLEM_HAT_ITEM);
     }
 
     @SubscribeEvent
     private static void registerRenderers(RegisterRenderers event) {
-        event.registerBlockEntityRenderer(GolemObjects.GOLEM_HEAD_TYPE, GolemHeadRenderer::new);
+        event.registerBlockEntityRenderer(GolemObjects.GOLEM_HAT_TYPE, GolemHatRenderer::new);
         event.registerEntityRenderer(GolemObjects.ENCHANTED_SNOWBALL, ThrownItemRenderer::new);
     }
 
     @SubscribeEvent
     private static void registerLayers(RegisterLayerDefinitions event) {
-        event.registerLayerDefinition(GolemHeadRenderer.SIDES_LAYER, GolemHeadRenderer::createSidesLayer);
+        event.registerLayerDefinition(GolemHatRenderer.SIDES_LAYER, GolemHatRenderer::createSidesLayer);
     }
 }

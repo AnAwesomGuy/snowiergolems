@@ -3,7 +3,7 @@ package net.anawesomguy.snowiergolems.item;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.anawesomguy.snowiergolems.GolemObjects;
-import net.anawesomguy.snowiergolems.block.GolemHeadBlockEntity;
+import net.anawesomguy.snowiergolems.block.GolemHatBlockEntity;
 import net.minecraft.core.Holder;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
@@ -18,7 +18,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class GolemHeadItem extends BlockItem {
+public class GolemHatItem extends BlockItem {
     private static final Holder<SoundEvent> EQUIP_SOUND = Holder.direct(SoundEvents.SNOW_HIT);
     public static final Equipable EQUIPPABLE = new Equipable() {
 
@@ -33,7 +33,7 @@ public class GolemHeadItem extends BlockItem {
         }
     };
 
-    public GolemHeadItem(Block block, Properties properties) {
+    public GolemHatItem(Block block, Properties properties) {
         super(block, properties);
     }
 
@@ -50,12 +50,12 @@ public class GolemHeadItem extends BlockItem {
     @Override
     public void verifyComponentsAfterLoad(ItemStack stack) {
         Byte b = stack.get(GolemObjects.PUMPKIN_FACE);
-        if (b != null && !GolemHeadBlockEntity.isValidFaceId(b))
+        if (b != null && !GolemHatBlockEntity.isValidFaceId(b))
             updatePumpkinFace(stack);
     }
 
     public static void updatePumpkinFace(ItemStack stack) {
-        stack.set(GolemObjects.PUMPKIN_FACE, GolemHeadBlockEntity.calculateFaceId(null, stack.getTagEnchantments()));
+        stack.set(GolemObjects.PUMPKIN_FACE, GolemHatBlockEntity.calculateFaceId(null, stack.getTagEnchantments()));
     }
 
     @Override
@@ -67,7 +67,7 @@ public class GolemHeadItem extends BlockItem {
                                                                                                      enchant.level),
                                                                            Object2IntMap::putAll);
         newStack.set(GolemObjects.PUMPKIN_FACE,
-                     GolemHeadBlockEntity.calculateFaceId(null, enchants::getInt, enchants.keySet(), null));
+                     GolemHatBlockEntity.calculateFaceId(null, enchants::getInt, enchants.keySet(), null));
         return newStack;
     }
 }

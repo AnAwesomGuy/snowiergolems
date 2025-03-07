@@ -26,10 +26,10 @@
     "base": 15,
     "per_level_above_first": 15
   },
-  "primary_items": "snowiergolems:golem_head",
+  "primary_items": "snowiergolems:golem_hat",
   "slots": [
     "head"
   ],
-  "supported_items": "#snowiergolems:enchantable/golem_head",
+  "supported_items": "#snowiergolems:enchantable/golem_hat",
   "weight": 4
 }

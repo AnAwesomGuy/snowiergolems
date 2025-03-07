@@ -41,7 +41,7 @@ import java.util.Set;
 import java.util.function.Predicate;
 import java.util.function.ToIntFunction;
 
-public class GolemHeadBlockEntity extends BlockEntity implements Nameable {
+public class GolemHatBlockEntity extends BlockEntity implements Nameable {
     @SuppressWarnings("deprecation")
     private static final RandomSource FALLBACK_RANDOM = RandomSource.createThreadSafe();
 
@@ -63,12 +63,12 @@ public class GolemHeadBlockEntity extends BlockEntity implements Nameable {
     protected Component name;
     protected byte faceId;
 
-    public GolemHeadBlockEntity(BlockPos pos, BlockState state) {
-        super(GolemObjects.GOLEM_HEAD_TYPE, pos, state);
+    public GolemHatBlockEntity(BlockPos pos, BlockState state) {
+        super(GolemObjects.GOLEM_HAT_TYPE, pos, state);
     }
 
     public ItemStack getAsStack() {
-        ItemStack stack = new ItemStack(GolemObjects.GOLEM_HEAD_ITEM);
+        ItemStack stack = new ItemStack(GolemObjects.GOLEM_HAT_ITEM);
         stack.applyComponents(this.collectComponents());
         return stack;
     }
@@ -93,7 +93,7 @@ public class GolemHeadBlockEntity extends BlockEntity implements Nameable {
 
         if (tag.contains(ENCHANTMENTS_TAG))
             ENCHANTS_CODEC.parse(registries.createSerializationContext(NbtOps.INSTANCE), tag.get(ENCHANTMENTS_TAG))
-                          .resultOrPartial(err -> SnowierGolems.LOGGER.error("Failed to load golem head enchantments: '{}'", err))
+                          .resultOrPartial(err -> SnowierGolems.LOGGER.error("Failed to load golem hat enchantments: '{}'", err))
                           .ifPresent(this::setEnchantments);
 
         if (tag.contains(FACE_ID_TAG, Tag.TAG_BYTE))

@@ -3,7 +3,7 @@ package net.anawesomguy.snowiergolems.mixin;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import net.anawesomguy.snowiergolems.GolemObjects;
-import net.anawesomguy.snowiergolems.item.GolemHeadItem;
+import net.anawesomguy.snowiergolems.item.GolemHatItem;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.animal.SnowGolem;
@@ -25,8 +25,8 @@ public abstract class LivingEntityMixin {
         at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/Equipable;get(Lnet/minecraft/world/item/ItemStack;)Lnet/minecraft/world/item/Equipable;"))
     private Equipable setGolemHeadSlot(ItemStack stack, Operation<Equipable> original) {
         //noinspection ConstantValue
-        return (Object)this instanceof SnowGolem && stack.is(GolemObjects.GOLEM_HEAD_ITEM) ?
-            GolemHeadItem.EQUIPPABLE :
+        return (Object)this instanceof SnowGolem && stack.is(GolemObjects.GOLEM_HAT_ITEM) ?
+            GolemHatItem.EQUIPPABLE :
             original.call(stack);
     }
 

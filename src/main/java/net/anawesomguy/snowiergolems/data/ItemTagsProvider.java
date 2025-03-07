@@ -19,7 +19,7 @@ public class ItemTagsProvider extends net.minecraft.data.tags.ItemTagsProvider {
 
     @Override
     protected void addTags(@NotNull Provider provider) {
-        this.tag(GolemEnchantments.GOLEM_HEAD_ENCHANTABLE)
-            .add(GolemObjects.GOLEM_HEAD_ITEM);
+        this.tag(GolemEnchantments.GOLEM_HAT_ENCHANTABLE)
+            .add(GolemObjects.GOLEM_HAT_ITEM);
     }
 }

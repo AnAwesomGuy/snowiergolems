@@ -147,7 +147,7 @@ public abstract class SnowGolemMixin extends AbstractGolem implements OwnableSno
     @Inject(method = "mobInteract", at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/world/entity/player/Player;getItemInHand(Lnet/minecraft/world/InteractionHand;)Lnet/minecraft/world/item/ItemStack;"), cancellable = true)
     private void wearHat(Player player, InteractionHand hand, CallbackInfoReturnable<InteractionResult> cir,
                          @SuppressWarnings("UnresolvedLocalCapture") @Local ItemStack stack) {
-        if (stack.is(GolemObjects.GOLEM_HEAD_ITEM)) {
+        if (stack.is(GolemObjects.GOLEM_HAT_ITEM)) {
             cir.setReturnValue(InteractionResult.SUCCESS);
             setItemSlot(EquipmentSlot.HEAD, stack.copyWithCount(1));
         }
@@ -160,16 +160,16 @@ public abstract class SnowGolemMixin extends AbstractGolem implements OwnableSno
 
     @WrapMethod(method = "performRangedAttack")
     private void shootMultiple(LivingEntity target, float distanceFactor, Operation<Void> original,
-                               @Share("headStack") LocalRef<ItemStack> headStack,
+                               @Share("hatStack") LocalRef<ItemStack> hatStack,
                                @Share("enchantedSnowball") LocalBooleanRef enchants,
                                @Share("playedSound") LocalBooleanRef playedSound,
                                @Share("spread") LocalFloatRef spreadRef) {
         if (level() instanceof ServerLevel level) {
-            ItemStack head = getHeadItem();
-            headStack.set(head);
-            enchants.set(head.getAllEnchantments(registryAccess().lookupOrThrow(Registries.ENCHANTMENT)).isEmpty());
-            spreadRef.set(EnchantmentHelper.processProjectileSpread(level, head, this, 0F));
-            int count = EnchantmentHelper.processProjectileCount(level, head, this, 1);
+            ItemStack hat = getHeadItem();
+            hatStack.set(hat);
+            enchants.set(hat.getAllEnchantments(registryAccess().lookupOrThrow(Registries.ENCHANTMENT)).isEmpty());
+            spreadRef.set(EnchantmentHelper.processProjectileSpread(level, hat, this, 0F));
+            int count = EnchantmentHelper.processProjectileCount(level, hat, this, 1);
             while (count-- > 0)
                 original.call(target, distanceFactor);
         }
@@ -177,9 +177,9 @@ public abstract class SnowGolemMixin extends AbstractGolem implements OwnableSno
 
     @WrapOperation(method = "performRangedAttack", at = @At(value = "NEW", target = "(Lnet/minecraft/world/level/Level;Lnet/minecraft/world/entity/LivingEntity;)Lnet/minecraft/world/entity/projectile/Snowball;"))
     private Snowball enchantSnowball(Level level, LivingEntity shooter, Operation<Snowball> original,
-                                     @Share("headStack") LocalRef<ItemStack> headStack,
+                                     @Share("hatStack") LocalRef<ItemStack> hatStack,
                                      @Share("enchantedSnowball") LocalBooleanRef enchanted) {
-        return enchanted.get() ? original.call(level, shooter) : new EnchantedSnowball(level, shooter, headStack.get());
+        return enchanted.get() ? original.call(level, shooter) : new EnchantedSnowball(level, shooter, hatStack.get());
     }
 
     @WrapOperation(method = "performRangedAttack", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/animal/SnowGolem;playSound(Lnet/minecraft/sounds/SoundEvent;FF)V"))
