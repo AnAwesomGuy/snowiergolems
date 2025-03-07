@@ -51,7 +51,11 @@ public class GolemHeadItem extends BlockItem {
     public void verifyComponentsAfterLoad(ItemStack stack) {
         Byte b = stack.get(GolemObjects.PUMPKIN_FACE);
         if (b != null && !GolemHeadBlockEntity.isValidFaceId(b))
-            stack.set(GolemObjects.PUMPKIN_FACE, GolemHeadBlockEntity.calculateFaceId(null, stack.getTagEnchantments()));
+            updatePumpkinFace(stack);
+    }
+
+    public static void updatePumpkinFace(ItemStack stack) {
+        stack.set(GolemObjects.PUMPKIN_FACE, GolemHeadBlockEntity.calculateFaceId(null, stack.getTagEnchantments()));
     }
 
     @Override
@@ -62,7 +66,8 @@ public class GolemHeadItem extends BlockItem {
                                                                            (map, enchant) -> map.put(enchant.enchantment,
                                                                                                      enchant.level),
                                                                            Object2IntMap::putAll);
-        newStack.set(GolemObjects.PUMPKIN_FACE, GolemHeadBlockEntity.calculateFaceId(null, enchants::getInt, enchants.keySet(), null));
+        newStack.set(GolemObjects.PUMPKIN_FACE,
+                     GolemHeadBlockEntity.calculateFaceId(null, enchants::getInt, enchants.keySet(), null));
         return newStack;
     }
 }
