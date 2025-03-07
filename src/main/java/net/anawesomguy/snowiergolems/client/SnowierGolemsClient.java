@@ -22,7 +22,7 @@ public final class SnowierGolemsClient {
         }
     };
 
-    //@SubscribeEvent
+    @SubscribeEvent
     private static void registerClientExtensions(RegisterClientExtensionsEvent event) {
         event.registerItem(GOLEM_HEAD_ITEM_EXTENSIONS, GolemObjects.GOLEM_HEAD_ITEM);
     }

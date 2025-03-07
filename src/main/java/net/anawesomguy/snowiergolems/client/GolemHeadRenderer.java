@@ -117,7 +117,6 @@ public class GolemHeadRenderer implements BlockEntityRenderer<GolemHeadBlockEnti
         if (level != null)
             light = LevelRenderer.getLightColor(level, golemHead.getBlockState(), golemHead.getBlockPos().above());
 
-        Function<ResourceLocation, RenderType> entitySolid = RenderType::entitySolid;
         int faceId = Byte.toUnsignedInt(golemHead.getOrCreateFaceId());
         Material face = ALL_FACES.get(faceId);
         if (face == null) {
@@ -125,6 +124,19 @@ public class GolemHeadRenderer implements BlockEntityRenderer<GolemHeadBlockEnti
             return;
         }
 
+        render(face, stack, buffer, light, overlay, back, left, right, front, top, bottom);
+
+        stack.mulPose(Axis.YP.rotationDegrees(golemHead.getBlockState().getValue(GolemHeadBlock.FACING).toYRot()));
+    }
+
+    public static void render(Material face, PoseStack stack, MultiBufferSource buffer, int light, int overlay,
+                              ModelPart back,
+                              ModelPart left,
+                              ModelPart right,
+                              ModelPart front,
+                              ModelPart top,
+                              ModelPart bottom) {
+        Function<ResourceLocation, RenderType> entitySolid = RenderType::entitySolid;
         VertexConsumer topTexture, sidesTexture, bottomTexture = PUMPKIN_TOP.buffer(buffer, entitySolid);
         if (face == FROST_FACE) {
             topTexture = SNOW.buffer(buffer, entitySolid);
@@ -140,7 +152,5 @@ public class GolemHeadRenderer implements BlockEntityRenderer<GolemHeadBlockEnti
         left.render(stack, sidesTexture, light, overlay);
         right.render(stack, sidesTexture, light, overlay);
         front.render(stack, face.buffer(buffer, entitySolid), light, overlay);
-
-        stack.mulPose(Axis.YP.rotationDegrees(golemHead.getBlockState().getValue(GolemHeadBlock.FACING).toYRot()));
     }
 }
