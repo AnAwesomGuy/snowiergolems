@@ -1,7 +1,10 @@
 {
   "block.snowiergolems.golem_hat": "Snow Golem Hat",
   "enchantment.snowiergolems.accuracy": "Accuracy",
+  "enchantment.snowiergolems.aggressive": "Aggressive",
   "enchantment.snowiergolems.frost": "Frost",
+  "enchantment.snowiergolems.heat_resistance": "Heat Resistant",
+  "enchantment.snowiergolems.snowy_loyalty": "Snowy Loyalty",
   "entity.snowiergolems.enchanted_snowball": "Enchanted Snowball",
   "item.snowiergolems.golem_tome": "Enchanted Golem Tome",
   "snowiergolems.attribute.name.projectile_accuracy": "Projectile Accuracy"
