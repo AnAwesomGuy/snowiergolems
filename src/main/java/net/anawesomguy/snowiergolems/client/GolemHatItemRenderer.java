@@ -65,8 +65,8 @@ public final class GolemHatItemRenderer extends BlockEntityWithoutLevelRenderer 
         if (stack.getEnchantmentLevel(HolderCacher.getAsHolder(Enchantments.FLAME, Minecraft.getInstance().level)) > 0) {
             BlockState state = Blocks.FIRE.defaultBlockState();
             RenderType renderType = RenderType.cutout();
-            poseStack.translate(0F, 1F, 0F);
-            poseStack.scale(0.8F, 0.8F, 0.8F);
+            poseStack.translate(0.1F, 1F, 0.1F);
+            poseStack.scale(0.8F, 0.6F, 0.8F);
             blockRenderer.getModelRenderer().renderModel(
                 poseStack.last(),
                 buffer.getBuffer(renderType),

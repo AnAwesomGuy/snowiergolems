@@ -133,14 +133,16 @@ public class GolemHatRenderer implements BlockEntityRenderer<GolemHatBlockEntity
             return;
         }
 
-        stack.mulPose(Axis.YP.rotationDegrees(golemHat.getBlockState().getValue(GolemHatBlock.FACING).toYRot()));
+        stack.translate(0.5F, 0F, 0.5F);
+        stack.mulPose(Axis.YP.rotationDegrees(-golemHat.getBlockState().getValue(GolemHatBlock.FACING).toYRot()));
+        stack.translate(-0.5F, 0F, -0.5F);
         render(face, stack, buffer, light, overlay, back, left, right, front, top, bottom);
 
         if (golemHat.hasEnchantment(Enchantments.FLAME)) {
             BlockState state = Blocks.FIRE.defaultBlockState();
             RenderType renderType = RenderType.cutout();
-            stack.translate(0F, 1F, 0F);
-            stack.scale(0.8F, 0.8F, 0.8F);
+            stack.translate(0.1F, 1F, 0.1F);
+            stack.scale(0.8F, 0.6F, 0.8F);
             blockRenderer.getModelRenderer().renderModel(
                 stack.last(),
                 buffer.getBuffer(renderType),
