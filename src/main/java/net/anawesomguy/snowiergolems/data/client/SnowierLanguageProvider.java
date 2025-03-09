@@ -84,7 +84,7 @@ public abstract class SnowierLanguageProvider extends LanguageProvider {
             add(ACCURACY, "准确度");
             add(AGGRESSIVE, "兇");
             add(FROST, "霜");
-            add(HEAT_RESISTANT, "耐熱");
+            add(HEAT_RESISTANT, "耐热");
             add(SNOWY_LOYALTY, "雪人忠诚");
 
             add(PROJECTILE_ACCURACY.value().getDescriptionId(), "准确度");
