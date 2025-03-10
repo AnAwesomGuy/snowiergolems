@@ -81,9 +81,10 @@ public class GolemHatBlockEntity extends BlockEntity implements Nameable {
             BlockPos pos = this.getBlockPos();
             AuxiliaryLightManager auxLight = level.getAuxLightManager(pos);
             if (auxLight != null)
-                if (hasEnchantment(HolderCacher.getAsHolder(Enchantments.FLAME, level)))
+                if (hasEnchantment(HolderCacher.getAsHolder(Enchantments.FLAME, level))) {
                     auxLight.setLightAt(pos, 15);
-                else
+                    level.getChunkSource().getLightEngine().checkBlock(pos);
+                } else
                     auxLight.removeLightAt(pos);
         }
     }
@@ -155,10 +156,6 @@ public class GolemHatBlockEntity extends BlockEntity implements Nameable {
         return this.saveWithoutMetadata(registries);
     }
 
-    public void setCustomName(@Nullable Component customName) {
-        this.name = customName;
-    }
-
     @Override
     public Component getName() {
         return name == null ? getBlockState().getBlock().getName() : name;
@@ -169,6 +166,11 @@ public class GolemHatBlockEntity extends BlockEntity implements Nameable {
     public Component getCustomName() {
         return name;
     }
+
+    public void setCustomName(@Nullable Component customName) {
+        this.name = customName;
+    }
+
 
     public byte getOrCreateFaceId() {
         if (isValidFaceId(faceId))
@@ -263,7 +265,6 @@ public class GolemHatBlockEntity extends BlockEntity implements Nameable {
         if (enchants != null && !enchants.isEmpty())
             enchantments.putAll(enchants);
         enchantments.trim();
-        update(null);
     }
 
     public void setEnchantments(@Nullable Set<Entry<Holder<Enchantment>>> enchants) {
@@ -273,7 +274,6 @@ public class GolemHatBlockEntity extends BlockEntity implements Nameable {
             for (Entry<Holder<Enchantment>> entry : enchants)
                 enchantments.put(entry.getKey(), entry.getIntValue());
         enchantments.trim();
-        update(null);
     }
 
     public Holder<Enchantment> toHolder(ResourceKey<Enchantment> key) {
