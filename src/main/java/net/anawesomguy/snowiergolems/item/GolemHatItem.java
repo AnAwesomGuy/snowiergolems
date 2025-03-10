@@ -18,21 +18,8 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class GolemHatItem extends BlockItem {
+public class GolemHatItem extends BlockItem implements Equipable {
     private static final Holder<SoundEvent> EQUIP_SOUND = Holder.direct(SoundEvents.SNOW_HIT);
-    public static final Equipable EQUIPPABLE = new Equipable() {
-
-        @Override
-        public EquipmentSlot getEquipmentSlot() {
-            return EquipmentSlot.HEAD;
-        }
-
-        @Override
-        public Holder<SoundEvent> getEquipSound() {
-            return EQUIP_SOUND;
-        }
-    };
-
     public GolemHatItem(Block block, Properties properties) {
         super(block, properties);
     }
@@ -69,5 +56,15 @@ public class GolemHatItem extends BlockItem {
         newStack.set(GolemObjects.PUMPKIN_FACE,
                      GolemHatBlockEntity.calculateFaceId(null, enchants::getInt, enchants.keySet(), null));
         return newStack;
+    }
+
+    @Override
+    public EquipmentSlot getEquipmentSlot() {
+        return EquipmentSlot.HEAD;
+    }
+
+    @Override
+    public Holder<SoundEvent> getEquipSound() {
+        return EQUIP_SOUND;
     }
 }
