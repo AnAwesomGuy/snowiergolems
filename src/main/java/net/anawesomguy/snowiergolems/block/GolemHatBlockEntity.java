@@ -30,15 +30,16 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.item.enchantment.ItemEnchantments;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.common.CommonHooks;
+import net.neoforged.neoforge.common.world.AuxiliaryLightManager;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
 import java.util.Set;
-import java.util.function.Predicate;
 import java.util.function.ToIntFunction;
 
 public class GolemHatBlockEntity extends BlockEntity implements Nameable {
@@ -73,6 +74,21 @@ public class GolemHatBlockEntity extends BlockEntity implements Nameable {
         return stack;
     }
 
+    public void update(@Nullable Level level) {
+        if (level == null)
+            level = this.level;
+
+        if (level != null && !level.isClientSide) {
+            BlockPos pos = this.getBlockPos();
+            AuxiliaryLightManager auxLight = level.getAuxLightManager(pos);
+            if (auxLight != null)
+                if (hasEnchantment(HolderCacher.getAsHolder(Enchantments.FLAME, level)))
+                    auxLight.setLightAt(pos, 15);
+                else
+                    auxLight.removeLightAt(pos);
+        }
+    }
+
     @Override
     protected void saveAdditional(CompoundTag tag, Provider registries) {
         super.saveAdditional(tag, registries);
@@ -81,7 +97,6 @@ public class GolemHatBlockEntity extends BlockEntity implements Nameable {
             tag.put(ENCHANTMENTS_TAG,
                     ENCHANTS_CODEC.encodeStart(registries.createSerializationContext(NbtOps.INSTANCE), enchantments)
                                   .getOrThrow());
-
 
         if (this.name != null)
             tag.putString("CustomName", Serializer.toJson(this.name, registries));
@@ -231,20 +246,6 @@ public class GolemHatBlockEntity extends BlockEntity implements Nameable {
         return this.enchantments.getInt(toHolder(enchantment));
     }
 
-    public int setLevel(ResourceKey<Enchantment> enchantment, int level) {
-        Holder<Enchantment> holder = toHolder(enchantment);
-        if (holder == null)
-            return 0;
-        return this.enchantments.put(holder, level);
-    }
-
-    public int removeEnchant(ResourceKey<Enchantment> enchantment) {
-        for (Holder<Enchantment> holder : this.enchantments.keySet())
-            if (holder.is(enchantment))
-                return enchantments.getInt(holder);
-        return 0;
-    }
-
     public boolean hasEnchantment(Holder<Enchantment> enchantment) {
         return this.enchantments.containsKey(enchantment);
     }
@@ -253,20 +254,8 @@ public class GolemHatBlockEntity extends BlockEntity implements Nameable {
         return this.enchantments.getInt(enchantment);
     }
 
-    public int setLevel(Holder<Enchantment> enchantment, int level) {
-        return this.enchantments.put(Objects.requireNonNull(enchantment), level);
-    }
-
-    public int removeEnchant(Holder<Enchantment> enchantment) {
-        return this.enchantments.removeInt(enchantment);
-    }
-
-    public void removeIf(Predicate<Holder<Enchantment>> predicate) {
-        this.enchantments.keySet().removeIf(predicate);
-    }
-
     public Object2IntMap<Holder<Enchantment>> getEnchantments() {
-        return enchantments;
+        return this.enchantments;
     }
 
     public void setEnchantments(@Nullable Object2IntMap<Holder<Enchantment>> enchants) {
@@ -275,6 +264,7 @@ public class GolemHatBlockEntity extends BlockEntity implements Nameable {
         if (enchants != null && !enchants.isEmpty())
             enchantments.putAll(enchants);
         enchantments.trim();
+        update(null);
     }
 
     public void setEnchantments(@Nullable Set<Entry<Holder<Enchantment>>> enchants) {
@@ -284,6 +274,7 @@ public class GolemHatBlockEntity extends BlockEntity implements Nameable {
             for (Entry<Holder<Enchantment>> entry : enchants)
                 enchantments.put(entry.getKey(), entry.getIntValue());
         enchantments.trim();
+        update(null);
     }
 
     public Holder<Enchantment> toHolder(ResourceKey<Enchantment> key) {

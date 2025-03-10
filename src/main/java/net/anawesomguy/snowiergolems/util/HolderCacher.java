@@ -6,7 +6,6 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.Holder.Reference;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.entity.Entity;
@@ -62,6 +61,8 @@ public final class HolderCacher<T> implements Function<Object, Reference<T>>, Su
     @SuppressWarnings("unchecked")
     @UnknownNullability
     public static <T> Reference<T> getAsHolder(ResourceKey<T> key, Object obj) {
+        if (obj instanceof Holder.Reference<?>)
+            obj = ((Reference<?>)obj).unwrapLookup();
         return (
             obj instanceof HolderGetter<?> ? Optional.of((HolderGetter<T>)obj) : Optional.ofNullable(switch (obj) {
                 case Entity entity -> entity.registryAccess();
@@ -69,7 +70,6 @@ public final class HolderCacher<T> implements Function<Object, Reference<T>>, Su
                 case MinecraftServer server -> server.registryAccess();
                 case SharedSuggestionProvider suggestionProvider -> suggestionProvider.registryAccess();
                 case HolderLookup.Provider provider -> provider;
-                case Reference<?> reference -> (RegistryAccess)reference.unwrapLookup();
                 // could probably put more but im *lazy*
                 case null, default -> {
                     // attempt to resolve
