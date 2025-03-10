@@ -21,6 +21,7 @@ import net.anawesomguy.snowiergolems.entity.SnowGolemFollowOwnerGoal;
 import net.anawesomguy.snowiergolems.entity.SnowGolemOwnerHurtByTargetGoal;
 import net.anawesomguy.snowiergolems.entity.SnowGolemOwnerHurtTargetGoal;
 import net.anawesomguy.snowiergolems.util.ExpiringMemoizedBooleanSupplier;
+import net.anawesomguy.snowiergolems.util.HolderCacher;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
@@ -54,8 +55,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.UUID;
 import java.util.function.BooleanSupplier;
-
-import static net.anawesomguy.snowiergolems.enchant.EnchantmentCachers.*;
 
 @Mixin(SnowGolem.class)
 public abstract class SnowGolemMixin extends AbstractGolem implements OwnableSnowGolem {
@@ -115,7 +114,7 @@ public abstract class SnowGolemMixin extends AbstractGolem implements OwnableSno
 
         // check snowy loyalty
         BooleanSupplier checkLoyalty = new ExpiringMemoizedBooleanSupplier(
-            () -> getHeadItem().getEnchantmentLevel(SNOWY_LOYALTY_ENCHANT.apply(this)) > 0,
+            () -> getHeadItem().getEnchantmentLevel(registryAccess().holderOrThrow(GolemEnchantments.SNOWY_LOYALTY)) > 0,
             12);
         goalSelector.addGoal(5,
                              new ConditionalGoal(new SnowGolemFollowOwnerGoal(this, 1.1, 15, 4), checkLoyalty));
@@ -128,15 +127,15 @@ public abstract class SnowGolemMixin extends AbstractGolem implements OwnableSno
                                new ConditionalGoal(new NearestAttackableTargetGoal<>(this, LivingEntity.class, true,
                                                                                      this::snowiergolems$isOwner),
                                                    () -> getHeadItem().getEnchantmentLevel(
-                                                       AGGRESSIVE_ENCHANT.apply(this)) >= 3)); // level 3
+                                                       HolderCacher.AGGRESSIVE_ENCHANT.apply(this)) >= 3)); // level 3
         targetSelector.addGoal(-1,
                                new ConditionalGoal(new HurtByTargetGoal(this, SnowGolem.class).setAlertOthers(),
                                                    () -> getHeadItem().getEnchantmentLevel(
-                                                       AGGRESSIVE_ENCHANT.apply(this)) >= 2)); // level 2
+                                                       HolderCacher.AGGRESSIVE_ENCHANT.apply(this)) >= 2)); // level 2
         targetSelector.addGoal(0,
                                new ConditionalGoal(new HurtByTargetGoal(this, SnowGolem.class),
                                                    () -> getHeadItem().getEnchantmentLevel(
-                                                       AGGRESSIVE_ENCHANT.apply(this)) >= 1)); // level 1
+                                                       HolderCacher.AGGRESSIVE_ENCHANT.apply(this)) >= 1)); // level 1
     }
 
     @Redirect(method = "shear", at = @At(value = "NEW", target = "(Lnet/minecraft/world/level/ItemLike;)Lnet/minecraft/world/item/ItemStack;"))
@@ -149,13 +148,14 @@ public abstract class SnowGolemMixin extends AbstractGolem implements OwnableSno
                          @SuppressWarnings("UnresolvedLocalCapture") @Local ItemStack stack) {
         if (stack.is(GolemObjects.GOLEM_HAT_ITEM)) {
             cir.setReturnValue(InteractionResult.SUCCESS);
-            setItemSlot(EquipmentSlot.HEAD, stack.copyWithCount(1));
+            setItemSlot(EquipmentSlot.HEAD, stack.consumeAndReturn(1, player));
         }
     }
 
     @ModifyExpressionValue(method = "aiStep", at = @At(value = "INVOKE", target = "Lnet/minecraft/core/Holder;is(Lnet/minecraft/tags/TagKey;)Z"))
     private boolean doNotMelt(boolean original) { // yet again hardcoded (i apologize)
-        return original && (getHeadItem().getEnchantmentLevel(HEAT_RESIST_ENCHANT.apply(this)) > 0);
+        return original &&
+               (getHeadItem().getEnchantmentLevel(registryAccess().holderOrThrow(GolemEnchantments.HEAT_RESISTANT)) > 0);
     }
 
     @WrapMethod(method = "performRangedAttack")

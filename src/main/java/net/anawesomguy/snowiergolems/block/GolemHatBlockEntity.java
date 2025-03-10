@@ -6,7 +6,6 @@ import it.unimi.dsi.fastutil.objects.Object2IntMap.Entry;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.anawesomguy.snowiergolems.GolemObjects;
 import net.anawesomguy.snowiergolems.SnowierGolems;
-import net.anawesomguy.snowiergolems.enchant.EnchantmentCachers;
 import net.anawesomguy.snowiergolems.enchant.GolemEnchantments;
 import net.anawesomguy.snowiergolems.mixin.ItemEnchantmentsAccessor;
 import net.anawesomguy.snowiergolems.util.HolderCacher;
@@ -201,7 +200,7 @@ public class GolemHatBlockEntity extends BlockEntity implements Nameable {
                 return TOTAL_FACES - 1; // frost face is the last face (its also 0-indexed)
 
             boolean b = random.nextBoolean();
-            int aggressiveLevel = levelGetter.applyAsInt(EnchantmentCachers.AGGRESSIVE_ENCHANT.apply(obj));
+            int aggressiveLevel = levelGetter.applyAsInt(HolderCacher.AGGRESSIVE_ENCHANT.apply(obj));
             if (aggressiveLevel > 0 && f < (1 - 0.7F / (2 + aggressiveLevel))) // same math thingy as above
                 return b ? NORMAL_FACE_COUNT : NORMAL_FACE_COUNT + 1;
 

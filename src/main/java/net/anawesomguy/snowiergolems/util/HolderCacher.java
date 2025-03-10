@@ -1,5 +1,6 @@
 package net.anawesomguy.snowiergolems.util;
 
+import net.anawesomguy.snowiergolems.enchant.GolemEnchantments;
 import net.minecraft.client.Minecraft;
 import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.core.Holder;
@@ -9,6 +10,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.LevelReader;
 import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.common.CommonHooks;
@@ -22,6 +24,8 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 public final class HolderCacher<T> implements Function<Object, Reference<T>>, Supplier<Reference<T>> {
+    public static final HolderCacher<Enchantment> AGGRESSIVE_ENCHANT = new HolderCacher<>(GolemEnchantments.AGGRESSIVE);
+
     public final ResourceKey<T> key;
     private Reference<T> tReference;
 
