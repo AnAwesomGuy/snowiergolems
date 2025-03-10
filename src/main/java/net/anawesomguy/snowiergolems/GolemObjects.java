@@ -44,6 +44,12 @@ public final class GolemObjects {
         throw new AssertionError();
     }
 
+    public static final DataComponentType<Byte> PUMPKIN_FACE =
+        DataComponentType.<Byte>builder()
+                         .networkSynchronized(ByteBufCodecs.BYTE)
+                         .persistent(PrimitiveCodec.BYTE)
+                         .build();
+
     public static final ResourceLocation GOLEM_HAT_ID = id("golem_hat");
     public static final GolemHatBlock GOLEM_HAT = new GolemHatBlock(
         Block.Properties.of() // copied from carved pumpkin
@@ -55,23 +61,16 @@ public final class GolemObjects {
     public static final BlockItem GOLEM_HAT_ITEM = new GolemHatItem(
         GOLEM_HAT,
         new Item.Properties().stacksTo(1)
-                             .attributes(ItemAttributeModifiers.EMPTY.withTooltip(false)));
+                             .attributes(ItemAttributeModifiers.EMPTY.withTooltip(false))
+                             .component(PUMPKIN_FACE, (byte)-1));
     @SuppressWarnings("DataFlowIssue")
     public static final BlockEntityType<GolemHatBlockEntity> GOLEM_HAT_TYPE =
         BlockEntityType.Builder.of(GolemHatBlockEntity::new, GOLEM_HAT).build(null);
 
-
-    public static final DataComponentType<Byte> PUMPKIN_FACE =
-        DataComponentType.<Byte>builder()
-                         .networkSynchronized(ByteBufCodecs.BYTE)
-                         .persistent(PrimitiveCodec.BYTE)
-                         .build();
     public static final GolemTomeItem GOLEM_TOME = new GolemTomeItem(
         new Item.Properties().stacksTo(1)
                              .rarity(Rarity.UNCOMMON)
-                             .component(DataComponents.STORED_ENCHANTMENTS, ItemEnchantments.EMPTY)
-                             .component(DataComponents.ENCHANTMENT_GLINT_OVERRIDE, true)
-                             .component(PUMPKIN_FACE, (byte)-1));
+                             .component(DataComponents.STORED_ENCHANTMENTS, ItemEnchantments.EMPTY));
 
     public static final ResourceLocation ENCHANTED_SNOWBALL_ID = id("enchanted_snowball");
     public static final EntityType<EnchantedSnowball> ENCHANTED_SNOWBALL =
