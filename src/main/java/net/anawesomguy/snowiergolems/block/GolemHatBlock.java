@@ -1,19 +1,15 @@
 package net.anawesomguy.snowiergolems.block;
 
-import net.anawesomguy.snowiergolems.GolemObjects;
 import net.anawesomguy.snowiergolems.mixin.CarvedPumpkinAccessor;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.CarvedPumpkinBlock;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityTicker;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.HitResult;
 import net.neoforged.neoforge.common.world.AuxiliaryLightManager;
@@ -47,19 +43,16 @@ public class GolemHatBlock extends CarvedPumpkinBlock implements EntityBlock {
         return new GolemHatBlockEntity(pos, state);
     }
 
-    @Nullable
-    @Override
-    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level_, BlockState blockState, BlockEntityType<T> type) {
-        return type == GolemObjects.GOLEM_HAT_TYPE ?
-            ((level, pos, state, blockEntity) -> ((GolemHatBlockEntity)blockEntity).update(level)) :
-            null;
-    }
-
     @Override
     public int getLightEmission(BlockState state, BlockGetter level, BlockPos pos) {
         AuxiliaryLightManager auxLight = level.getAuxLightManager(pos);
         if (auxLight != null)
             return auxLight.getLightAt(pos);
         return super.getLightEmission(state, level, pos);
+    }
+
+    @Override
+    public boolean hasDynamicLightEmission(BlockState state) {
+        return true;
     }
 }
