@@ -8,6 +8,7 @@ import net.anawesomguy.snowiergolems.entity.EnchantedSnowball;
 import net.anawesomguy.snowiergolems.item.GolemHatItem;
 import net.anawesomguy.snowiergolems.item.GolemTomeItem;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.dispenser.BlockSource;
@@ -18,11 +19,13 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.item.ArmorItem;
+import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.component.ItemAttributeModifiers;
+import net.minecraft.world.item.context.DirectionalPlaceContext;
 import net.minecraft.world.item.enchantment.ItemEnchantments;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -30,7 +33,6 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.DispenserBlock;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.material.PushReaction;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
@@ -121,16 +123,13 @@ public final class GolemObjects {
             @Override
             protected ItemStack execute(BlockSource source, ItemStack stack) {
                 Level level = source.level();
-                BlockPos pos = source.pos().relative(source.state().getValue(DispenserBlock.FACING));
-                GolemHatBlock golemHat = GOLEM_HAT;
-                if (level.isEmptyBlock(pos) && golemHat.canSpawnGolem(level, pos)) {
-                    if (!level.isClientSide) {
-                        level.setBlock(pos, golemHat.defaultBlockState(), 2 | 1);
-                        level.gameEvent(null, GameEvent.BLOCK_PLACE, pos);
-                    }
-
+                Direction direction = source.state().getValue(DispenserBlock.FACING);
+                BlockPos pos = source.pos().relative(direction);
+                if (level.isEmptyBlock(pos) && GOLEM_HAT.canSpawnGolem(level, pos)) {
+                    setSuccess(((BlockItem)stack.getItem()).place(
+                        new DirectionalPlaceContext(level, pos, direction, stack, Direction.UP)
+                    ).consumesAction());
                     stack.shrink(1);
-                    this.setSuccess(true);
                 } else
                     this.setSuccess(ArmorItem.dispenseArmor(source, stack));
                 return stack;
