@@ -35,10 +35,10 @@ public final class EnchantmentDatagen {
                  enchantment(definition(
                      golemHatEnchantable,
                      golemHat,
-                     4,
+                     3,
                      3,
                      dynamicCost(15, 15),
-                     dynamicCost(55, 18),
+                     dynamicCost(45, 18),
                      2,
                      EquipmentSlotGroup.HEAD
                  )).withEffect(
@@ -57,10 +57,10 @@ public final class EnchantmentDatagen {
                  enchantment(definition(
                      golemHatEnchantable,
                      golemHat,
-                     4,
+                     2,
                      3,
                      dynamicCost(15, 15),
-                     dynamicCost(60, 20),
+                     dynamicCost(50, 20),
                      3,
                      EquipmentSlotGroup.HEAD
                  ))
@@ -71,7 +71,7 @@ public final class EnchantmentDatagen {
                  enchantment(definition(
                      golemHatEnchantable,
                      golemHat,
-                     3,
+                     2,
                      4,
                      dynamicCost(20, 15),
                      dynamicCost(60, 20),
@@ -90,10 +90,10 @@ public final class EnchantmentDatagen {
                  enchantment(definition(
                      golemHatEnchantable,
                      golemHat,
-                     4,
+                     3,
                      1,
-                     dynamicCost(25, 15),
-                     dynamicCost(45, 20),
+                     dynamicCost(25, 0),
+                     dynamicCost(45, 0),
                      4,
                      EquipmentSlotGroup.HEAD
                  ))
@@ -106,8 +106,8 @@ public final class EnchantmentDatagen {
                      golemHat,
                      4,
                      1,
-                     dynamicCost(35, 20),
-                     dynamicCost(60, 20),
+                     dynamicCost(30, 0),
+                     dynamicCost(50, 0),
                      5,
                      EquipmentSlotGroup.HEAD
                  ))
