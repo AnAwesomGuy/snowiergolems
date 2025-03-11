@@ -38,10 +38,10 @@ public class GolemHatItem extends BlockItem implements Equipable {
     public void verifyComponentsAfterLoad(ItemStack stack) {
         Byte b = stack.get(GolemObjects.PUMPKIN_FACE);
         if (b != null && !GolemHatBlockEntity.isValidFaceId(b))
-            updatePumpkinFace(stack);
+            setPumpkinFace(stack);
     }
 
-    public static void updatePumpkinFace(ItemStack stack) {
+    public static void setPumpkinFace(ItemStack stack) {
         stack.set(GolemObjects.PUMPKIN_FACE, GolemHatBlockEntity.calculateFaceId(null, stack.getTagEnchantments()));
     }
 
@@ -56,6 +56,12 @@ public class GolemHatItem extends BlockItem implements Equipable {
         newStack.set(GolemObjects.PUMPKIN_FACE,
                      GolemHatBlockEntity.calculateFaceId(null, enchants::getInt, enchants.keySet(), null));
         return newStack;
+    }
+
+    public ItemStack defaultStackWithoutFace() {
+        ItemStack stack = this.getDefaultInstance();
+        stack.remove(GolemObjects.PUMPKIN_FACE);
+        return stack;
     }
 
     @Override

@@ -26,6 +26,6 @@ public abstract class AnvilMenuMixin {
     @Inject(method = "createResult", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/enchantment/EnchantmentHelper;setEnchantments(Lnet/minecraft/world/item/ItemStack;Lnet/minecraft/world/item/enchantment/ItemEnchantments;)V", shift = Shift.AFTER))
     private void changePumpkinFace(CallbackInfo ci, @Local(ordinal = 2) ItemStack stack) {
         if (stack.is(GolemObjects.GOLEM_HAT_ITEM))
-            GolemHatItem.updatePumpkinFace(stack);
+            GolemHatItem.setPumpkinFace(stack);
     }
 }

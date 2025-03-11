@@ -40,6 +40,7 @@ public final class SnowierGolemsDatagen {
                      registriesProvider,
                      blockTags,
                      new ItemTagsProvider(output, lookupProvider, blockTags.contentsGetter(), existingFileHelper),
+                     new EntityTypeTagsProvider(output, lookupProvider, existingFileHelper),
                      new EnchantmentTagsProvider(output, lookupProvider, existingFileHelper),
                      new RecipeProvider(output, lookupProvider),
                      new LootProvider(output, lookupProvider),

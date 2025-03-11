@@ -27,7 +27,7 @@ public class RecipeProvider extends net.minecraft.data.recipes.RecipeProvider {
                               .requires(GOLEM_HAT_ITEM)
                               .unlockedBy("has_golem_hat", has(GOLEM_HAT))
                               .save(output, id("golem_hat_to_pumpkin"));
-        ShapelessRecipeBuilder.shapeless(MISC, GOLEM_HAT_ITEM)
+        ShapelessRecipeBuilder.shapeless(MISC, GOLEM_HAT_ITEM.defaultStackWithoutFace())
                               .requires(CARVED_PUMPKIN)
                               .requires(SNOWBALL)
                               .unlockedBy("has_snowball_and_pumpkin",

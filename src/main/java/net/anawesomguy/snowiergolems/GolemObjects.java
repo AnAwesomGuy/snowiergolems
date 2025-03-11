@@ -18,7 +18,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.item.ArmorItem;
-import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -58,7 +57,7 @@ public final class GolemObjects {
                         .sound(SoundType.WOOD)
                         .isValidSpawn(Blocks::always)
                         .pushReaction(PushReaction.DESTROY));
-    public static final BlockItem GOLEM_HAT_ITEM = new GolemHatItem(
+    public static final GolemHatItem GOLEM_HAT_ITEM = new GolemHatItem(
         GOLEM_HAT,
         new Item.Properties().stacksTo(1)
                              .attributes(ItemAttributeModifiers.EMPTY.withTooltip(false))
