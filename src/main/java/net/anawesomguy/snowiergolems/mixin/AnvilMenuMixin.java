@@ -19,12 +19,12 @@ public abstract class AnvilMenuMixin {
     }
 
     @WrapWithCondition(method = "onTake", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/Container;setItem(ILnet/minecraft/world/item/ItemStack;)V", ordinal = 3))
-    private boolean doNotShrinkIfGolemTome(Container instance, int i, ItemStack stack) {
-        return !stack.is(GolemObjects.GOLEM_TOME);
+    private boolean doNotShrinkIfGolemTome(Container instance, int i, ItemStack empty, @Local(argsOnly = true) ItemStack stack) {
+        return !instance.getItem(1).is(GolemObjects.GOLEM_TOME);
     }
 
     @Inject(method = "createResult", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/enchantment/EnchantmentHelper;setEnchantments(Lnet/minecraft/world/item/ItemStack;Lnet/minecraft/world/item/enchantment/ItemEnchantments;)V", shift = Shift.AFTER))
-    private void changePumpkinFace(CallbackInfo ci, @Local(ordinal = 2) ItemStack stack) {
+    private void changePumpkinFace(CallbackInfo ci, @Local(ordinal = 1) ItemStack stack) {
         if (stack.is(GolemObjects.GOLEM_HAT_ITEM))
             GolemHatItem.setPumpkinFace(stack);
     }
