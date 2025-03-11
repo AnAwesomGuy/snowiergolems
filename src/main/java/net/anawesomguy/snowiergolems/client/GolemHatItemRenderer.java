@@ -60,7 +60,7 @@ public final class GolemHatItemRenderer extends BlockEntityWithoutLevelRenderer 
             return;
         }
 
-        render(face, poseStack, buffer, light, overlay, back, left, right, front, top, bottom);
+        render(face, poseStack, buffer, light, overlay, stack.isEnchanted(), true, back, left, right, front, top, bottom);
 
         if (stack.getEnchantmentLevel(HolderCacher.getAsHolder(Enchantments.FLAME, Minecraft.getInstance().level)) > 0) {
             BlockState state = Blocks.FIRE.defaultBlockState();

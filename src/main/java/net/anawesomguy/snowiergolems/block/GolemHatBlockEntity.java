@@ -238,6 +238,10 @@ public class GolemHatBlockEntity extends BlockEntity implements Nameable {
                                enchantments != null ? enchantments.keySet() : null, null);
     }
 
+    public boolean hasEnchantments() {
+        return !this.enchantments.isEmpty();
+    }
+
     public boolean hasEnchantment(ResourceKey<Enchantment> enchantment) {
         Set<Holder<Enchantment>> keySet = this.enchantments.keySet();
         for (Holder<Enchantment> key : keySet)

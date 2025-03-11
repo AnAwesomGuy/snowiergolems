@@ -3,6 +3,7 @@ package net.anawesomguy.snowiergolems.client;
 import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.blaze3d.vertex.VertexMultiConsumer;
 import com.mojang.math.Axis;
 import net.anawesomguy.snowiergolems.GolemObjects;
 import net.anawesomguy.snowiergolems.SnowierGolems;
@@ -136,7 +137,7 @@ public class GolemHatRenderer implements BlockEntityRenderer<GolemHatBlockEntity
         stack.translate(0.5F, 0F, 0.5F);
         stack.mulPose(Axis.YP.rotationDegrees(-golemHat.getBlockState().getValue(GolemHatBlock.FACING).toYRot()));
         stack.translate(-0.5F, 0F, -0.5F);
-        render(face, stack, buffer, light, overlay, back, left, right, front, top, bottom);
+        render(face, stack, buffer, light, overlay, golemHat.hasEnchantments(), false, back, left, right, front, top, bottom);
 
         if (golemHat.hasEnchantment(Enchantments.FLAME)) {
             BlockState state = Blocks.FIRE.defaultBlockState();
@@ -156,28 +157,31 @@ public class GolemHatRenderer implements BlockEntityRenderer<GolemHatBlockEntity
         }
     }
 
-    public static void render(Material face, PoseStack stack, MultiBufferSource buffer, int light, int overlay,
-                              ModelPart back,
-                              ModelPart left,
-                              ModelPart right,
-                              ModelPart front,
-                              ModelPart top,
-                              ModelPart bottom) {
+    public static void render(Material face, PoseStack stack, MultiBufferSource buffer,
+                              int light, int overlay, boolean glint, boolean item,
+                              ModelPart back, ModelPart left, ModelPart right, ModelPart front, ModelPart top, ModelPart bottom) {
         Function<ResourceLocation, RenderType> entitySolid = RenderType::entitySolid;
-        VertexConsumer topTexture, sidesTexture, bottomTexture = PUMPKIN_TOP.buffer(buffer, entitySolid);
+        VertexConsumer topTexture, sidesTexture;
+        VertexConsumer bottomTexture = withGlint(buffer, PUMPKIN_TOP.buffer(buffer, entitySolid), item, glint);
         if (face == FROST_FACE) {
-            topTexture = SNOW.buffer(buffer, entitySolid);
-            sidesTexture = SNOWY_PUMPKIN_SIDE.buffer(buffer, entitySolid);
+            topTexture = withGlint(buffer, SNOW.buffer(buffer, entitySolid), item, glint);
+            sidesTexture = withGlint(buffer, SNOWY_PUMPKIN_SIDE.buffer(buffer, entitySolid), item, glint);
         } else {
             topTexture = bottomTexture;
-            sidesTexture = PUMPKIN_SIDE.buffer(buffer, entitySolid);
+            sidesTexture = withGlint(buffer, PUMPKIN_SIDE.buffer(buffer, entitySolid), item, glint);
         }
 
         back.render(stack, sidesTexture, light, overlay);
         left.render(stack, sidesTexture, light, overlay);
         right.render(stack, sidesTexture, light, overlay);
-        front.render(stack, face.buffer(buffer, entitySolid), light, overlay);
+        front.render(stack, withGlint(buffer, face.buffer(buffer, entitySolid), item, glint), light, overlay);
         top.render(stack, topTexture, light, overlay);
         bottom.render(stack, bottomTexture, light, overlay);
+    }
+
+    public static VertexConsumer withGlint(MultiBufferSource buffers, VertexConsumer original, boolean item, boolean glint) {
+        return glint
+            ? VertexMultiConsumer.create(buffers.getBuffer(RenderType.entityGlint()), original)
+            : original;
     }
 }
