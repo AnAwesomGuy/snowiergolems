@@ -24,6 +24,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 public final class HolderCacher<T> implements Function<Object, Reference<T>>, Supplier<Reference<T>> {
+    // hopefully this doesn't break when resources reload?
     public static final HolderCacher<Enchantment> AGGRESSIVE_ENCHANT = new HolderCacher<>(GolemEnchantments.AGGRESSIVE);
 
     public final ResourceKey<T> key;

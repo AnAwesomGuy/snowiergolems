@@ -138,9 +138,10 @@ public abstract class SnowGolemMixin extends AbstractGolem implements OwnableSno
                                                        HolderCacher.AGGRESSIVE_ENCHANT.apply(this)) >= 1)); // level 1
     }
 
+    // i dont feel like using a wrap-op (i will if you yell at me tho)
     @Redirect(method = "shear", at = @At(value = "NEW", target = "(Lnet/minecraft/world/level/ItemLike;)Lnet/minecraft/world/item/ItemStack;"))
     private ItemStack dropHat(ItemLike item) {
-        return getHeadItem();
+        return getHeadItem().split(1);
     }
 
     @Inject(method = "mobInteract", at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/world/entity/player/Player;getItemInHand(Lnet/minecraft/world/InteractionHand;)Lnet/minecraft/world/item/ItemStack;"), cancellable = true)
@@ -154,20 +155,20 @@ public abstract class SnowGolemMixin extends AbstractGolem implements OwnableSno
 
     @ModifyExpressionValue(method = "aiStep", at = @At(value = "INVOKE", target = "Lnet/minecraft/core/Holder;is(Lnet/minecraft/tags/TagKey;)Z"))
     private boolean doNotMelt(boolean original) { // yet again hardcoded (i apologize)
-        return original &&
-               (getHeadItem().getEnchantmentLevel(registryAccess().holderOrThrow(GolemEnchantments.HEAT_RESISTANT)) > 0);
+        return original && // if the biome causes heat there must be a >0 level of heat-resistant for damage
+               (getHeadItem().getEnchantmentLevel(registryAccess().holderOrThrow(GolemEnchantments.HEAT_RESISTANT)) <= 0);
     }
 
     @WrapMethod(method = "performRangedAttack")
     private void shootMultiple(LivingEntity target, float distanceFactor, Operation<Void> original,
                                @Share("hatStack") LocalRef<ItemStack> hatStack,
-                               @Share("enchantedSnowball") LocalBooleanRef enchants,
-                               @Share("playedSound") LocalBooleanRef playedSound,
+                               @Share("enchanted") LocalBooleanRef enchanted,
+                               @Share("soundNotPlayed") LocalBooleanRef soundNotPlayed,
                                @Share("spread") LocalFloatRef spreadRef) {
         if (level() instanceof ServerLevel level) {
             ItemStack hat = getHeadItem();
             hatStack.set(hat);
-            enchants.set(hat.getAllEnchantments(registryAccess().lookupOrThrow(Registries.ENCHANTMENT)).isEmpty());
+            enchanted.set(!hat.getAllEnchantments(registryAccess().lookupOrThrow(Registries.ENCHANTMENT)).isEmpty());
             spreadRef.set(EnchantmentHelper.processProjectileSpread(level, hat, this, 0F));
             int count = EnchantmentHelper.processProjectileCount(level, hat, this, 1);
             while (count-- > 0)
@@ -178,15 +179,15 @@ public abstract class SnowGolemMixin extends AbstractGolem implements OwnableSno
     @WrapOperation(method = "performRangedAttack", at = @At(value = "NEW", target = "(Lnet/minecraft/world/level/Level;Lnet/minecraft/world/entity/LivingEntity;)Lnet/minecraft/world/entity/projectile/Snowball;"))
     private Snowball enchantSnowball(Level level, LivingEntity shooter, Operation<Snowball> original,
                                      @Share("hatStack") LocalRef<ItemStack> hatStack,
-                                     @Share("enchantedSnowball") LocalBooleanRef enchanted) {
-        return enchanted.get() ? original.call(level, shooter) : new EnchantedSnowball(level, shooter, hatStack.get());
+                                     @Share("enchanted") LocalBooleanRef enchanted) {
+        return enchanted.get() ? new EnchantedSnowball(level, shooter, hatStack.get()) : original.call(level, shooter);
     }
 
     @WrapOperation(method = "performRangedAttack", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/animal/SnowGolem;playSound(Lnet/minecraft/sounds/SoundEvent;FF)V"))
     private void playSoundOnce(SnowGolem instance, SoundEvent soundEvent, float volume, float pitch, Operation<Void> original,
-                               @Share("playedSound") LocalBooleanRef playedSound) {
-        if (playedSound.get()) {
-            playedSound.set(true);
+                               @Share("soundNotPlayed") LocalBooleanRef soundNotPlayed) {
+        if (!soundNotPlayed.get()) {
+            soundNotPlayed.set(false);
             original.call(instance, soundEvent, volume, pitch);
         }
     }
@@ -196,7 +197,7 @@ public abstract class SnowGolemMixin extends AbstractGolem implements OwnableSno
                                   Operation<Void> original, @Share("spread") LocalFloatRef spreadRef) {
         float newInaccuracy = Math.max(0F, (float)-getAttributeValue(GolemEnchantments.PROJECTILE_ACCURACY));
         float spread = spreadRef.get();
-        if (spread == 0)
+        if (spread == 0F)
             original.call(instance, x, y, z, velocity, newInaccuracy);
         else {
             // tysm gigaherz for this code, i wouldve never figured it out
