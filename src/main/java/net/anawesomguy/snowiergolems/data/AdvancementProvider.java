@@ -17,6 +17,5 @@ public class AdvancementProvider extends net.neoforged.neoforge.common.data.Adva
     }
 
     public static void generate(Provider registries, Consumer<AdvancementHolder> saver, ExistingFileHelper existingFileHelper) {
-
     }
 }

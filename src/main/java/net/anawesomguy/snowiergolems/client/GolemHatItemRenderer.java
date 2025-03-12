@@ -3,7 +3,6 @@ package net.anawesomguy.snowiergolems.client;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.anawesomguy.snowiergolems.GolemObjects;
 import net.anawesomguy.snowiergolems.SnowierGolems;
-import net.anawesomguy.snowiergolems.util.HolderCacher;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
@@ -62,7 +61,7 @@ public final class GolemHatItemRenderer extends BlockEntityWithoutLevelRenderer 
 
         render(face, poseStack, buffer, light, overlay, stack.isEnchanted(), true, back, left, right, front, top, bottom);
 
-        if (stack.getEnchantmentLevel(HolderCacher.getAsHolder(Enchantments.FLAME, Minecraft.getInstance().level)) > 0) {
+        if (stack.getEnchantmentLevel(SnowierGolems.getAsHolder(Enchantments.FLAME, Minecraft.getInstance().level)) > 0) {
             BlockState state = Blocks.FIRE.defaultBlockState();
             RenderType renderType = RenderType.cutout();
             poseStack.translate(0.1F, 1F, 0.1F);

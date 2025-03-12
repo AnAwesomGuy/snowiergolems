@@ -2,7 +2,6 @@ package net.anawesomguy.snowiergolems.enchant;
 
 import net.anawesomguy.snowiergolems.SnowierGolems;
 import net.anawesomguy.snowiergolems.data.EnchantmentDatagen;
-import net.anawesomguy.snowiergolems.entity.OwnableSnowGolem;
 import net.anawesomguy.snowiergolems.entity.SnowGolemFollowOwnerGoal;
 import net.anawesomguy.snowiergolems.entity.SnowGolemOwnerHurtByTargetGoal;
 import net.anawesomguy.snowiergolems.entity.SnowGolemOwnerHurtTargetGoal;
@@ -84,7 +83,6 @@ public interface GolemEnchantments {
      * @see SnowGolemFollowOwnerGoal
      * @see SnowGolemOwnerHurtByTargetGoal
      * @see SnowGolemOwnerHurtTargetGoal
-     * @see OwnableSnowGolem
      */
     ResourceKey<Enchantment> SNOWY_LOYALTY = key("snowy_loyalty");
 

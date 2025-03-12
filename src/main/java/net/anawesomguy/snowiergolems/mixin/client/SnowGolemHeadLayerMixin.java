@@ -17,7 +17,7 @@ public abstract class SnowGolemHeadLayerMixin {
     }
 
     @WrapOperation(method = "render(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;ILnet/minecraft/world/entity/animal/SnowGolem;FFFFFF)V", at = @At(value = "NEW", target = "(Lnet/minecraft/world/level/ItemLike;)Lnet/minecraft/world/item/ItemStack;"))
-    private ItemStack addEnchantmentFoil(ItemLike item, Operation<ItemStack> original, @Local(argsOnly = true) SnowGolem golem) {
+    private ItemStack changeRenderedHat(ItemLike item, Operation<ItemStack> original, @Local(argsOnly = true) SnowGolem golem) {
         ItemStack head = golem.getItemBySlot(EquipmentSlot.HEAD);
         return head.isEmpty() ? original.call(item) : head;
     }

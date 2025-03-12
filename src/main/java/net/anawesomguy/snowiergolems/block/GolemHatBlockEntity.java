@@ -8,7 +8,6 @@ import net.anawesomguy.snowiergolems.GolemObjects;
 import net.anawesomguy.snowiergolems.SnowierGolems;
 import net.anawesomguy.snowiergolems.enchant.GolemEnchantments;
 import net.anawesomguy.snowiergolems.mixin.ItemEnchantmentsAccessor;
-import net.anawesomguy.snowiergolems.util.HolderCacher;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Holder.Reference;
@@ -81,7 +80,7 @@ public class GolemHatBlockEntity extends BlockEntity implements Nameable {
             BlockPos pos = this.getBlockPos();
             AuxiliaryLightManager auxLight = level.getAuxLightManager(pos);
             if (auxLight != null)
-                if (!this.isRemoved() && hasEnchantment(HolderCacher.getAsHolder(Enchantments.FLAME, level)))
+                if (!this.isRemoved() && hasEnchantment(SnowierGolems.getAsHolder(Enchantments.FLAME, level)))
                     auxLight.setLightAt(pos, 15);
                 else
                     auxLight.removeLightAt(pos);
@@ -208,24 +207,24 @@ public class GolemHatBlockEntity extends BlockEntity implements Nameable {
                     }
 
             float f = random.nextFloat();
-            int frostLevel = levelGetter.applyAsInt(HolderCacher.getAsHolder(GolemEnchantments.FROST, obj));
+            int frostLevel = levelGetter.applyAsInt(SnowierGolems.getAsHolder(GolemEnchantments.FROST, obj));
             if (frostLevel > 0 && f < (1 - 0.7F / (2 + frostLevel))) // 1 => 65%, 3 => 82.5% :)
                 return TOTAL_FACES - 1; // frost face is the last face (its also 0-indexed)
 
             boolean b = random.nextBoolean();
-            int aggressiveLevel = levelGetter.applyAsInt(HolderCacher.AGGRESSIVE_ENCHANT.apply(obj));
+            int aggressiveLevel = levelGetter.applyAsInt(SnowierGolems.getAsHolder(GolemEnchantments.AGGRESSIVE, obj));
             if (aggressiveLevel > 0 && f < (1 - 0.7F / (2 + aggressiveLevel))) // same math thingy as above
                 return b ? NORMAL_FACE_COUNT : NORMAL_FACE_COUNT + 1;
 
-            boolean hasFlame = keySet.contains(HolderCacher.getAsHolder(Enchantments.FLAME, obj));
+            boolean hasFlame = keySet.contains(SnowierGolems.getAsHolder(Enchantments.FLAME, obj));
             if (hasFlame && f > 0.3F) // 70%
                 return NORMAL_FACE_COUNT + ANGRY_FACE_COUNT; // first lit face is jack-o-lantern
 
             if (random.nextFloat() > 0.35F) // 65% chance
-                if (keySet.contains(HolderCacher.getAsHolder(Enchantments.MULTISHOT, obj)))
+                if (keySet.contains(SnowierGolems.getAsHolder(Enchantments.MULTISHOT, obj)))
                     // lit 3-eyed is 8th and normal 3-eyed is 2nd to last
                     return (byte)(hasFlame ? 7 : TOTAL_FACES - 2);
-                else if (keySet.contains(HolderCacher.getAsHolder(GolemEnchantments.ACCURACY, obj)))
+                else if (keySet.contains(SnowierGolems.getAsHolder(GolemEnchantments.ACCURACY, obj)))
                     // 1-eyed is the first face not in any categories
                     return NORMAL_FACE_COUNT + ANGRY_FACE_COUNT + LIT_FACE_COUNT;
         }

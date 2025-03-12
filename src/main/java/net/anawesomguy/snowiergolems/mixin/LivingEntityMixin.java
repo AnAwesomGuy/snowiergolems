@@ -23,7 +23,7 @@ public abstract class LivingEntityMixin {
     @Inject(method = "onEquipItem", at = @At("HEAD"))
     private void setPumpkinOnEquip(EquipmentSlot slot, ItemStack oldItem, ItemStack newItem, CallbackInfo ci) {
         //noinspection ConstantValue
-        if ((Object)this instanceof SnowGolem golem && slot == EquipmentSlot.HEAD)
+        if ((Object)this instanceof SnowGolem golem && slot == EquipmentSlot.HEAD && !newItem.isEmpty())
             golem.setPumpkin(true);
     }
 

@@ -9,6 +9,7 @@ import net.anawesomguy.snowiergolems.item.GolemHatItem;
 import net.anawesomguy.snowiergolems.item.GolemTomeItem;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.UUIDUtil;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.dispenser.BlockSource;
@@ -35,8 +36,13 @@ import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.material.PushReaction;
+import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
+import net.neoforged.neoforge.registries.NeoForgeRegistries.Keys;
 import net.neoforged.neoforge.registries.RegisterEvent;
+
+import java.util.UUID;
 
 import static net.anawesomguy.snowiergolems.SnowierGolems.id;
 
@@ -81,6 +87,9 @@ public final class GolemObjects {
                           .updateInterval(10)
                           .build(ENCHANTED_SNOWBALL_ID.getPath());
 
+    public static final AttachmentType<UUID> SNOW_GOLEM_OWNER =
+        AttachmentType.<UUID>builder(() -> null).serialize(UUIDUtil.LENIENT_CODEC).build();
+
     static void register(RegisterEvent event) {
         event.register(Registries.BLOCK, helper -> {
             helper.register(GOLEM_HAT_ID, GOLEM_HAT);
@@ -106,6 +115,10 @@ public final class GolemObjects {
         event.register(Registries.DATA_COMPONENT_TYPE, helper -> {
             helper.register(id("pumpkin_face_id"), PUMPKIN_FACE);
         });
+
+        event.register(Keys.ATTACHMENT_TYPES, helper -> {
+            helper.register(id("snow_golem_owner"), SNOW_GOLEM_OWNER);
+        });
     }
 
     static void addToCreativeTabs(BuildCreativeModeTabContentsEvent event) {
@@ -118,8 +131,8 @@ public final class GolemObjects {
         }
     }
 
-    static {
-        DispenserBlock.registerBehavior(GOLEM_HAT_ITEM, new OptionalDispenseItemBehavior() {
+    static void commonSetup(FMLCommonSetupEvent event) {
+        event.enqueueWork(() -> DispenserBlock.registerBehavior(GOLEM_HAT_ITEM, new OptionalDispenseItemBehavior() {
             @Override
             protected ItemStack execute(BlockSource source, ItemStack stack) {
                 Level level = source.level();
@@ -134,6 +147,6 @@ public final class GolemObjects {
                     this.setSuccess(ArmorItem.dispenseArmor(source, stack));
                 return stack;
             }
-        });
+        }));
     }
 }
