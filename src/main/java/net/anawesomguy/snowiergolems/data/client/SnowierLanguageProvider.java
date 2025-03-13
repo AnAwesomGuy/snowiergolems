@@ -23,7 +23,8 @@ public abstract class SnowierLanguageProvider extends LanguageProvider {
         return new LanguageProvider[]{
             new EnglishUS(output),
             new ChineseTraditional(output),
-            new ChineseSimplified(output)
+            new ChineseSimplified(output),
+            new PortugueseBR(output)
         };
     }
 
@@ -102,13 +103,13 @@ public abstract class SnowierLanguageProvider extends LanguageProvider {
             add(GOLEM_HAT, "Chápeu de Golem de neve");
             add(ENCHANTED_SNOWBALL, "Bola de neve encantada");
 
-            add(GolemEnchantments.ACCURACY, "Precisão");
-            add(GolemEnchantments.AGGRESSIVE, "Agressivo");
-            add(GolemEnchantments.FROST, "Congelamento");
-            add(GolemEnchantments.HEAT_RESISTANT, "Resistência ao calor");
-            add(GolemEnchantments.SNOWY_LOYALTY, "Lealdade nevada");
+            add(ACCURACY, "Precisão");
+            add(AGGRESSIVE, "Agressivo");
+            add(FROST, "Congelamento");
+            add(HEAT_RESISTANT, "Resistência ao calor");
+            add(SNOWY_LOYALTY, "Lealdade nevada");
 
-            add(GolemEnchantments.PROJECTILE_ACCURACY.value().getDescriptionId(), "Precisão de Projétil");
+            add(PROJECTILE_ACCURACY.value().getDescriptionId(), "Precisão de Projétil");
         }
     }
 }
