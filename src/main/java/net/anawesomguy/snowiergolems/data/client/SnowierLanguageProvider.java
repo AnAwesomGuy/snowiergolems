@@ -46,6 +46,10 @@ public abstract class SnowierLanguageProvider extends LanguageProvider {
             add(SNOWY_LOYALTY, "Snowy Loyalty");
 
             add(PROJECTILE_ACCURACY.value().getDescriptionId(), "Projectile Accuracy");
+
+            add("snowiergolems.advancements.build_enchanted_golem", "There's Snow Way This Worked!");
+            add("snowiergolems.advancements.build_enchanted_golem.description",
+                "Build a snow golem with an enchanted snow golem hat");
         }
     }
 
@@ -68,6 +72,10 @@ public abstract class SnowierLanguageProvider extends LanguageProvider {
             add(SNOWY_LOYALTY, "雪人忠誠");
 
             add(PROJECTILE_ACCURACY.value().getDescriptionId(), "準確度");
+
+            // help me translate :(
+            //add("snowiergolems.advancements.build_enchanted_golem", "???");
+            //add("snowiergolems.advancements.build_enchanted_golem.description", "用附魔雪人帽堆雪人");
         }
     }
 

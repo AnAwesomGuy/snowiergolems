@@ -32,10 +32,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.DispenserBlock;
-import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraft.world.level.material.MapColor;
-import net.minecraft.world.level.material.PushReaction;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
@@ -58,13 +55,8 @@ public final class GolemObjects {
                          .build();
 
     public static final ResourceLocation GOLEM_HAT_ID = id("golem_hat");
-    public static final GolemHatBlock GOLEM_HAT = new GolemHatBlock(
-        Block.Properties.of() // copied from carved pumpkin
-                        .mapColor(MapColor.COLOR_ORANGE)
-                        .strength(1F)
-                        .sound(SoundType.WOOD)
-                        .isValidSpawn(Blocks::always)
-                        .pushReaction(PushReaction.DESTROY));
+    @SuppressWarnings("deprecation")
+    public static final GolemHatBlock GOLEM_HAT = new GolemHatBlock(Block.Properties.ofLegacyCopy(Blocks.CARVED_PUMPKIN));
     public static final GolemHatItem GOLEM_HAT_ITEM = new GolemHatItem(
         GOLEM_HAT,
         new Item.Properties().stacksTo(1)

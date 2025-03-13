@@ -1,0 +1,48 @@
+{
+  "parent": "minecraft:adventure/root",
+  "criteria": {
+    "summoned_enchanted_golem": {
+      "conditions": {
+        "entity": [
+          {
+            "condition": "minecraft:entity_properties",
+            "entity": "this",
+            "predicate": {
+              "type": "minecraft:snow_golem",
+              "equipment": {
+                "head": {
+                  "predicates": {
+                    "minecraft:enchantments": [
+                      {}
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        ]
+      },
+      "trigger": "minecraft:summoned_entity"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "snowiergolems.advancements.build_enchanted_golem.description"
+    },
+    "icon": {
+      "components": {
+        "snowiergolems:pumpkin_face_id": 2
+      },
+      "count": 1,
+      "id": "snowiergolems:golem_hat"
+    },
+    "title": {
+      "translate": "snowiergolems.advancements.build_enchanted_golem"
+    }
+  },
+  "requirements": [
+    [
+      "summoned_enchanted_golem"
+    ]
+  ]
+}

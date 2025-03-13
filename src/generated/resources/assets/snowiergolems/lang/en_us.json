@@ -7,5 +7,7 @@
   "enchantment.snowiergolems.snowy_loyalty": "Snowy Loyalty",
   "entity.snowiergolems.enchanted_snowball": "Enchanted Snowball",
   "item.snowiergolems.golem_tome": "Enchanted Golem Tome",
+  "snowiergolems.advancements.build_enchanted_golem": "There's Snow Way This Worked!",
+  "snowiergolems.advancements.build_enchanted_golem.description": "Build a snow golem with an enchanted snow golem hat",
   "snowiergolems.attribute.name.projectile_accuracy": "Projectile Accuracy"
 }
