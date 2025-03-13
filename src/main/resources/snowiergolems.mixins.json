@@ -10,6 +10,7 @@
     "CarvedPumpkinAccessor",
     "CarvedPumpkinMixin",
     "EnchantmentHelperMixin",
+    "GrindstoneMenuMixin",
     "ItemEnchantmentsAccessor",
     "LivingEntityMixin",
     "SnowGolemMixin"

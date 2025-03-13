@@ -5,20 +5,19 @@ import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.OwnableEntity;
 import net.minecraft.world.entity.ai.goal.target.TargetGoal;
 import net.minecraft.world.entity.ai.targeting.TargetingConditions;
+import net.minecraft.world.entity.animal.SnowGolem;
 
 import java.util.EnumSet;
+import java.util.Objects;
 
 public class SnowGolemOwnerHurtByTargetGoal extends TargetGoal {
     protected final OwnableEntity ownable;
-    protected final Class<? extends LivingEntity>[] ignore;
     private LivingEntity ownerLastHurtBy;
     private int timestamp;
 
-    @SafeVarargs
-    public <T extends Mob & OwnableEntity> SnowGolemOwnerHurtByTargetGoal(T ownable, Class<? extends LivingEntity>... ignore) {
+    public <T extends Mob & OwnableEntity> SnowGolemOwnerHurtByTargetGoal(T ownable) {
         super(ownable, false);
-        this.ownable = ownable;
-        this.ignore = ignore;
+        this.ownable =  Objects.requireNonNull(ownable);
         this.setFlags(EnumSet.of(Flag.TARGET));
     }
 
@@ -30,10 +29,8 @@ public class SnowGolemOwnerHurtByTargetGoal extends TargetGoal {
             if (entity == null)
                 return false;
 
-            Class<? extends LivingEntity> hurtByClass = entity.getClass();
-            for (Class<? extends LivingEntity> clazz : ignore)
-                if (clazz.isAssignableFrom(hurtByClass))
-                    return false;
+            if (SnowGolem.class.isAssignableFrom(entity.getClass()))
+                return false;
 
             return owner.getLastHurtByMobTimestamp() != this.timestamp
                    && this.canAttack(entity, TargetingConditions.DEFAULT);

@@ -8,6 +8,8 @@ import net.anawesomguy.snowiergolems.entity.EnchantedSnowball;
 import net.anawesomguy.snowiergolems.item.GolemHatItem;
 import net.anawesomguy.snowiergolems.item.GolemTomeItem;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.UUIDUtil;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.dispenser.BlockSource;
@@ -24,6 +26,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.component.ItemAttributeModifiers;
+import net.minecraft.world.item.context.DirectionalPlaceContext;
 import net.minecraft.world.item.enchantment.ItemEnchantments;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -31,11 +34,15 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.DispenserBlock;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.material.PushReaction;
+import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
+import net.neoforged.neoforge.registries.NeoForgeRegistries.Keys;
 import net.neoforged.neoforge.registries.RegisterEvent;
+
+import java.util.UUID;
 
 import static net.anawesomguy.snowiergolems.SnowierGolems.id;
 
@@ -43,6 +50,12 @@ public final class GolemObjects {
     private GolemObjects() {
         throw new AssertionError();
     }
+
+    public static final DataComponentType<Byte> PUMPKIN_FACE =
+        DataComponentType.<Byte>builder()
+                         .networkSynchronized(ByteBufCodecs.BYTE)
+                         .persistent(PrimitiveCodec.BYTE)
+                         .build();
 
     public static final ResourceLocation GOLEM_HAT_ID = id("golem_hat");
     public static final GolemHatBlock GOLEM_HAT = new GolemHatBlock(
@@ -52,26 +65,19 @@ public final class GolemObjects {
                         .sound(SoundType.WOOD)
                         .isValidSpawn(Blocks::always)
                         .pushReaction(PushReaction.DESTROY));
-    public static final BlockItem GOLEM_HAT_ITEM = new GolemHatItem(
+    public static final GolemHatItem GOLEM_HAT_ITEM = new GolemHatItem(
         GOLEM_HAT,
         new Item.Properties().stacksTo(1)
-                             .attributes(ItemAttributeModifiers.EMPTY.withTooltip(false)));
+                             .attributes(ItemAttributeModifiers.EMPTY.withTooltip(false))
+                             .component(PUMPKIN_FACE, (byte)-1));
     @SuppressWarnings("DataFlowIssue")
     public static final BlockEntityType<GolemHatBlockEntity> GOLEM_HAT_TYPE =
         BlockEntityType.Builder.of(GolemHatBlockEntity::new, GOLEM_HAT).build(null);
 
-
-    public static final DataComponentType<Byte> PUMPKIN_FACE =
-        DataComponentType.<Byte>builder()
-                         .networkSynchronized(ByteBufCodecs.BYTE)
-                         .persistent(PrimitiveCodec.BYTE)
-                         .build();
     public static final GolemTomeItem GOLEM_TOME = new GolemTomeItem(
         new Item.Properties().stacksTo(1)
                              .rarity(Rarity.UNCOMMON)
-                             .component(DataComponents.STORED_ENCHANTMENTS, ItemEnchantments.EMPTY)
-                             .component(DataComponents.ENCHANTMENT_GLINT_OVERRIDE, true)
-                             .component(PUMPKIN_FACE, (byte)-1));
+                             .component(DataComponents.STORED_ENCHANTMENTS, ItemEnchantments.EMPTY));
 
     public static final ResourceLocation ENCHANTED_SNOWBALL_ID = id("enchanted_snowball");
     public static final EntityType<EnchantedSnowball> ENCHANTED_SNOWBALL =
@@ -80,6 +86,9 @@ public final class GolemObjects {
                           .clientTrackingRange(4)
                           .updateInterval(10)
                           .build(ENCHANTED_SNOWBALL_ID.getPath());
+
+    public static final AttachmentType<UUID> SNOW_GOLEM_OWNER =
+        AttachmentType.<UUID>builder(() -> null).serialize(UUIDUtil.LENIENT_CODEC).build();
 
     static void register(RegisterEvent event) {
         event.register(Registries.BLOCK, helper -> {
@@ -106,6 +115,10 @@ public final class GolemObjects {
         event.register(Registries.DATA_COMPONENT_TYPE, helper -> {
             helper.register(id("pumpkin_face_id"), PUMPKIN_FACE);
         });
+
+        event.register(Keys.ATTACHMENT_TYPES, helper -> {
+            helper.register(id("snow_golem_owner"), SNOW_GOLEM_OWNER);
+        });
     }
 
     static void addToCreativeTabs(BuildCreativeModeTabContentsEvent event) {
@@ -118,25 +131,22 @@ public final class GolemObjects {
         }
     }
 
-    static {
-        DispenserBlock.registerBehavior(GOLEM_HAT_ITEM, new OptionalDispenseItemBehavior() {
+    static void commonSetup(FMLCommonSetupEvent event) {
+        event.enqueueWork(() -> DispenserBlock.registerBehavior(GOLEM_HAT_ITEM, new OptionalDispenseItemBehavior() {
             @Override
             protected ItemStack execute(BlockSource source, ItemStack stack) {
                 Level level = source.level();
-                BlockPos pos = source.pos().relative(source.state().getValue(DispenserBlock.FACING));
-                GolemHatBlock golemHat = GOLEM_HAT;
-                if (level.isEmptyBlock(pos) && golemHat.canSpawnGolem(level, pos)) {
-                    if (!level.isClientSide) {
-                        level.setBlock(pos, golemHat.defaultBlockState(), 2 | 1);
-                        level.gameEvent(null, GameEvent.BLOCK_PLACE, pos);
-                    }
-
+                Direction direction = source.state().getValue(DispenserBlock.FACING);
+                BlockPos pos = source.pos().relative(direction);
+                if (level.isEmptyBlock(pos) && GOLEM_HAT.canSpawnGolem(level, pos)) {
+                    setSuccess(((BlockItem)stack.getItem()).place(
+                        new DirectionalPlaceContext(level, pos, direction, stack, Direction.UP)
+                    ).consumesAction());
                     stack.shrink(1);
-                    this.setSuccess(true);
                 } else
                     this.setSuccess(ArmorItem.dispenseArmor(source, stack));
                 return stack;
             }
-        });
+        }));
     }
 }

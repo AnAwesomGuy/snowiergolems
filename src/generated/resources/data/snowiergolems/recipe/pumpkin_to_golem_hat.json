@@ -10,6 +10,9 @@
     }
   ],
   "result": {
+    "components": {
+      "!snowiergolems:pumpkin_face_id": {}
+    },
     "count": 1,
     "id": "snowiergolems:golem_hat"
   }

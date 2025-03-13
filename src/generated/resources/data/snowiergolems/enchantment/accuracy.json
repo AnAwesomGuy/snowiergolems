@@ -18,7 +18,7 @@
     ]
   },
   "max_cost": {
-    "base": 55,
+    "base": 45,
     "per_level_above_first": 18
   },
   "max_level": 3,
@@ -31,5 +31,5 @@
     "head"
   ],
   "supported_items": "#snowiergolems:enchantable/golem_hat",
-  "weight": 4
+  "weight": 3
 }

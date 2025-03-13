@@ -6,14 +6,14 @@ import com.llamalad7.mixinextras.sugar.Share;
 import com.llamalad7.mixinextras.sugar.ref.LocalDoubleRef;
 import com.llamalad7.mixinextras.sugar.ref.LocalRef;
 import net.anawesomguy.snowiergolems.GolemObjects;
-import net.anawesomguy.snowiergolems.block.GolemHatBlockEntity;
 import net.anawesomguy.snowiergolems.block.GolemHatBlock;
-import net.anawesomguy.snowiergolems.entity.OwnableSnowGolem;
+import net.anawesomguy.snowiergolems.block.GolemHatBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.animal.SnowGolem;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.CarvedPumpkinBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -74,8 +74,11 @@ public abstract class CarvedPumpkinMixin {
     private static void setSnowGolemOwner(Level level, BlockPatternMatch patternMatch, Entity golem, BlockPos pos,
                                           CallbackInfo ci, @Share("nearestPlayer") LocalRef<ServerPlayer> nearestPlayer,
                                           @Share("distanceSqr") LocalDoubleRef distanceSqrRef) {
-        if (golem instanceof SnowGolem)
-            ((OwnableSnowGolem)golem).snowiergolems$setOwner(nearestPlayer.get());
+        if (golem instanceof SnowGolem) {
+            Player player = nearestPlayer.get();
+            if (player != null)
+                golem.setData(GolemObjects.SNOW_GOLEM_OWNER, player.getUUID());
+        }
     }
 
     @ModifyExpressionValue(method = "getOrCreateSnowGolemFull", at = @At(value = "FIELD", target = "Lnet/minecraft/world/level/block/CarvedPumpkinBlock;PUMPKINS_PREDICATE:Ljava/util/function/Predicate;"))

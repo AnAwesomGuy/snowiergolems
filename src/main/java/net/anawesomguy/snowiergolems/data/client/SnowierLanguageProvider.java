@@ -1,7 +1,6 @@
 package net.anawesomguy.snowiergolems.data.client;
 
 import net.anawesomguy.snowiergolems.SnowierGolems;
-import net.anawesomguy.snowiergolems.enchant.GolemEnchantments;
 import net.minecraft.Util;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceKey;
@@ -9,6 +8,7 @@ import net.minecraft.world.item.enchantment.Enchantment;
 import net.neoforged.neoforge.common.data.LanguageProvider;
 
 import static net.anawesomguy.snowiergolems.GolemObjects.*;
+import static net.anawesomguy.snowiergolems.enchant.GolemEnchantments.*;
 
 public abstract class SnowierLanguageProvider extends LanguageProvider {
     public SnowierLanguageProvider(PackOutput output, String locale) {
@@ -38,13 +38,13 @@ public abstract class SnowierLanguageProvider extends LanguageProvider {
             add(GOLEM_HAT, "Snow Golem Hat");
             add(ENCHANTED_SNOWBALL, "Enchanted Snowball");
 
-            add(GolemEnchantments.ACCURACY, "Accuracy");
-            add(GolemEnchantments.AGGRESSIVE, "Aggressive");
-            add(GolemEnchantments.FROST, "Frost");
-            add(GolemEnchantments.HEAT_RESISTANT, "Heat Resistant");
-            add(GolemEnchantments.SNOWY_LOYALTY, "Snowy Loyalty");
+            add(ACCURACY, "Accuracy");
+            add(AGGRESSIVE, "Aggressive");
+            add(FROST, "Frost");
+            add(HEAT_RESISTANT, "Heat Resistant");
+            add(SNOWY_LOYALTY, "Snowy Loyalty");
 
-            add(GolemEnchantments.PROJECTILE_ACCURACY.value().getDescriptionId(), "Projectile Accuracy");
+            add(PROJECTILE_ACCURACY.value().getDescriptionId(), "Projectile Accuracy");
         }
     }
 
@@ -60,13 +60,13 @@ public abstract class SnowierLanguageProvider extends LanguageProvider {
             add(GOLEM_HAT, "雪人帽");
             add(ENCHANTED_SNOWBALL, "附魔雪球");
 
-            add(GolemEnchantments.ACCURACY, "準確度");
-            add(GolemEnchantments.AGGRESSIVE, "兇");
-            add(GolemEnchantments.FROST, "霜");
-            add(GolemEnchantments.HEAT_RESISTANT, "耐熱");
-            add(GolemEnchantments.SNOWY_LOYALTY, "雪人忠誠");
+            add(ACCURACY, "準確度");
+            add(AGGRESSIVE, "兇");
+            add(FROST, "霜");
+            add(HEAT_RESISTANT, "耐熱");
+            add(SNOWY_LOYALTY, "雪人忠誠");
 
-            add(GolemEnchantments.PROJECTILE_ACCURACY.value().getDescriptionId(), "準確度");
+            add(PROJECTILE_ACCURACY.value().getDescriptionId(), "準確度");
         }
     }
 
@@ -81,13 +81,13 @@ public abstract class SnowierLanguageProvider extends LanguageProvider {
             add(GOLEM_HAT, "雪人帽");
             add(ENCHANTED_SNOWBALL, "附魔雪球");
 
-            add(GolemEnchantments.ACCURACY, "准确度");
-            add(GolemEnchantments.AGGRESSIVE, "兇");
-            add(GolemEnchantments.FROST, "霜");
-            add(GolemEnchantments.HEAT_RESISTANT, "耐熱");
-            add(GolemEnchantments.SNOWY_LOYALTY, "雪人忠诚");
+            add(ACCURACY, "准确度");
+            add(AGGRESSIVE, "兇");
+            add(FROST, "霜");
+            add(HEAT_RESISTANT, "耐热");
+            add(SNOWY_LOYALTY, "雪人忠诚");
 
-            add(GolemEnchantments.PROJECTILE_ACCURACY.value().getDescriptionId(), "准确度");
+            add(PROJECTILE_ACCURACY.value().getDescriptionId(), "准确度");
         }
     }
 

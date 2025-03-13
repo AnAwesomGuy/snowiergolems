@@ -4,6 +4,7 @@ import net.anawesomguy.snowiergolems.mixin.CarvedPumpkinAccessor;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.CarvedPumpkinBlock;
 import net.minecraft.world.level.block.EntityBlock;
@@ -11,6 +12,7 @@ import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.HitResult;
+import net.neoforged.neoforge.common.world.AuxiliaryLightManager;
 import org.jetbrains.annotations.Nullable;
 
 public class GolemHatBlock extends CarvedPumpkinBlock implements EntityBlock {
@@ -30,6 +32,11 @@ public class GolemHatBlock extends CarvedPumpkinBlock implements EntityBlock {
             super.getCloneItemStack(state, target, level, pos, player);
     }
 
+    @Override
+    protected RenderShape getRenderShape(BlockState state) {
+        return RenderShape.ENTITYBLOCK_ANIMATED;
+    }
+
     @Nullable
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
@@ -37,7 +44,15 @@ public class GolemHatBlock extends CarvedPumpkinBlock implements EntityBlock {
     }
 
     @Override
-    protected RenderShape getRenderShape(BlockState state) {
-        return RenderShape.ENTITYBLOCK_ANIMATED;
+    public int getLightEmission(BlockState state, BlockGetter level, BlockPos pos) {
+        AuxiliaryLightManager auxLight = level.getAuxLightManager(pos);
+        if (auxLight != null)
+            return auxLight.getLightAt(pos);
+        return super.getLightEmission(state, level, pos);
+    }
+
+    @Override
+    public boolean hasDynamicLightEmission(BlockState state) {
+        return true;
     }
 }
