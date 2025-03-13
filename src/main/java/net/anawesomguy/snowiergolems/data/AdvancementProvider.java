@@ -1,20 +1,15 @@
 package net.anawesomguy.snowiergolems.data;
 
 import net.anawesomguy.snowiergolems.GolemObjects;
-import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.advancements.AdvancementType;
 import net.minecraft.advancements.critereon.EnchantmentPredicate;
 import net.minecraft.advancements.critereon.ItemEnchantmentsPredicate;
 import net.minecraft.advancements.critereon.ItemSubPredicates;
 import net.minecraft.advancements.critereon.MinMaxBounds.Ints;
-import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderLookup.Provider;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
@@ -66,9 +61,5 @@ public class AdvancementProvider extends net.neoforged.neoforge.common.data.Adva
                                                                                                  Ints.ANY)
                                                                                          )))))))
                            .save(saver, id("build_enchanted_golem"), existingFileHelper);
-    }
-
-    public static AdvancementHolder getAdvancement(HolderGetter<Advancement> lookup, ResourceLocation id) {
-        return new AdvancementHolder(id, lookup.getOrThrow(ResourceKey.create(Registries.ADVANCEMENT, id)).value());
     }
 }
