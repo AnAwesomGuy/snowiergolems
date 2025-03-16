@@ -89,6 +89,7 @@ public class GolemHatBlockEntity extends BlockEntity implements Nameable {
 
     @Override
     public void onLoad() {
+        this.getOrCreateFaceId();
         super.onLoad();
         update(null);
     }
