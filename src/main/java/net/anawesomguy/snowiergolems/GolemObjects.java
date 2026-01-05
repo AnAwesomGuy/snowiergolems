@@ -84,6 +84,7 @@ public final class GolemObjects {
         new Item.Properties().stacksTo(1)
                              .rarity(Rarity.UNCOMMON)
                              .component(DataComponents.STORED_ENCHANTMENTS, ItemEnchantments.EMPTY)
+                             .enchantable(8)
                              .setId(ResourceKey.create(Registries.ITEM, GOLEM_TOME_ID)));
 
     public static final Identifier ENCHANTED_SNOWBALL_ID = id("enchanted_snowball");
