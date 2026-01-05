@@ -1,34 +1,37 @@
 package net.anawesomguy.snowiergolems;
 
+import net.anawesomguy.snowiergolems.item.GolemHatItem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.core.Holder;
-import net.minecraft.core.Holder.Reference;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.LevelReader;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.common.CommonHooks;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.AnvilUpdateEvent;
 import net.neoforged.neoforge.server.ServerLifecycleHooks;
+import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnknownNullability;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.Optional;
 
 @Mod(SnowierGolems.MODID)
 public final class SnowierGolems {
     public static final String MODID = "snowiergolems";
-    public static final Logger LOGGER = LoggerFactory.getLogger(MODID);
-    public static final ResourceLocation MOD_LOCATION = ResourceLocation.fromNamespaceAndPath(MODID, MODID);
-    
-    public static ResourceLocation id(String path) {
+    // public static final Logger LOGGER = LoggerFactory.getLogger(MODID);
+    public static final Identifier MOD_LOCATION = Identifier.fromNamespaceAndPath(MODID, "");
+    public static final Identifier GOLEM_HAT_ID = id("golem_hat");
+
+    public static Identifier id(String path) {
         return MOD_LOCATION.withPath(path);
     }
 
@@ -36,6 +39,11 @@ public final class SnowierGolems {
         eventBus.addListener(GolemObjects::register);
         eventBus.addListener(GolemObjects::addToCreativeTabs);
         eventBus.addListener(GolemObjects::commonSetup);
+        NeoForge.EVENT_BUS.addListener((AnvilUpdateEvent event) -> {
+            ItemStack stack = event.getVanillaResult().output();
+            if (stack.is(GolemObjects.GOLEM_HAT_ITEM))
+                GolemHatItem.setPumpkinFace(stack);
+        });
     }
 
     /**
@@ -48,10 +56,9 @@ public final class SnowierGolems {
      * @return a {@link Holder} representing {@code key}, or {@code null} if one cannot be resolved.
      */
     @SuppressWarnings("unchecked")
-    @UnknownNullability
-    public static <T> Reference<T> getAsHolder(ResourceKey<T> key, Object obj) {
+    public static <T> Holder.@UnknownNullability Reference<T> getAsHolder(ResourceKey<T> key, @Nullable Object obj) {
         if (obj instanceof Holder.Reference<?>)
-            obj = ((Reference<?>)obj).unwrapLookup();
+            obj = ((Holder.Reference<?>)obj).unwrapLookup();
         return (
             obj instanceof HolderGetter<?> ? Optional.of((HolderGetter<T>)obj) : Optional.ofNullable(switch (obj) {
                 case Entity entity -> entity.registryAccess();
@@ -65,14 +72,14 @@ public final class SnowierGolems {
                     MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
                     if (server != null)
                         yield server.registryAccess();
-                    else if (FMLEnvironment.dist.isClient()) {
+                    else if (FMLEnvironment.getDist().isClient()) {
                         LevelReader level = Minecraft.getInstance().level;
                         if (level != null)
                             yield level.registryAccess();
                     }
                     yield null;
                 }
-            }).flatMap(access -> access.lookup(key.registryKey()))
+            }).<HolderGetter<T>>flatMap(access -> access.lookup(key.registryKey()))
         ).flatMap(getter -> getter.get(key))
          .orElse(null);
     }

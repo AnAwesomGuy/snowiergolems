@@ -11,8 +11,9 @@ import net.anawesomguy.snowiergolems.block.GolemHatBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.animal.SnowGolem;
+import net.minecraft.world.entity.animal.golem.SnowGolem;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.CarvedPumpkinBlock;
@@ -21,6 +22,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.pattern.BlockInWorld;
 import net.minecraft.world.level.block.state.pattern.BlockPattern.BlockPatternMatch;
 import net.neoforged.neoforge.common.util.FakePlayer;
+import org.jetbrains.annotations.Nullable;
+import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -53,7 +56,7 @@ public abstract class CarvedPumpkinMixin {
         }
     }
 
-    @Inject(method = "spawnGolemInWorld", at = @At(value = "INVOKE", target = "Lnet/minecraft/advancements/critereon/SummonedEntityTrigger;trigger(Lnet/minecraft/server/level/ServerPlayer;Lnet/minecraft/world/entity/Entity;)V"))
+    @Inject(method = "spawnGolemInWorld", at = @At(value = "INVOKE", target = "Lnet/minecraft/advancements/criterion/SummonedEntityTrigger;trigger(Lnet/minecraft/server/level/ServerPlayer;Lnet/minecraft/world/entity/Entity;)V"))
     private static void findNearestPlayerToGolem(Level level, BlockPatternMatch patternMatch, Entity golem, BlockPos pos,
                                                  CallbackInfo ci, @Local ServerPlayer player,
                                                  @Share("nearestPlayer") LocalRef<ServerPlayer> nearestPlayer,
@@ -72,17 +75,17 @@ public abstract class CarvedPumpkinMixin {
 
     @Inject(method = "spawnGolemInWorld", at = @At("RETURN"))
     private static void setSnowGolemOwner(Level level, BlockPatternMatch patternMatch, Entity golem, BlockPos pos,
-                                          CallbackInfo ci, @Share("nearestPlayer") LocalRef<ServerPlayer> nearestPlayer,
+                                          CallbackInfo ci, @Share("nearestPlayer") LocalRef<@Nullable ServerPlayer> nearestPlayer,
                                           @Share("distanceSqr") LocalDoubleRef distanceSqrRef) {
         if (golem instanceof SnowGolem) {
             Player player = nearestPlayer.get();
             if (player != null)
-                golem.setData(GolemObjects.SNOW_GOLEM_OWNER, player.getUUID());
+                golem.setData(GolemObjects.SNOW_GOLEM_OWNER, EntityReference.of(player));
         }
     }
 
-    @ModifyExpressionValue(method = "getOrCreateSnowGolemFull", at = @At(value = "FIELD", target = "Lnet/minecraft/world/level/block/CarvedPumpkinBlock;PUMPKINS_PREDICATE:Ljava/util/function/Predicate;"))
+    @ModifyExpressionValue(method = "getOrCreateSnowGolemFull", at = @At(value = "FIELD", target = "Lnet/minecraft/world/level/block/CarvedPumpkinBlock;PUMPKINS_PREDICATE:Ljava/util/function/Predicate;", opcode = Opcodes.GETSTATIC))
     private Predicate<BlockState> addGolemHatAsPumpkin(Predicate<BlockState> original) {
-        return original.or(state -> state != null && state.is(GolemObjects.GOLEM_HAT));
+        return original.or(state -> state.is(GolemObjects.GOLEM_HAT));
     }
 }

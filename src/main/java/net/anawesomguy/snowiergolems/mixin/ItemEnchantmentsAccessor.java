@@ -12,12 +12,12 @@ import org.spongepowered.asm.mixin.gen.Invoker;
 @Mixin(ItemEnchantments.class)
 public interface ItemEnchantmentsAccessor {
     @Accessor
-    static Codec<Object2IntOpenHashMap<Holder<Enchantment>>> getLEVELS_CODEC() {
+    static Codec<Object2IntOpenHashMap<Holder<Enchantment>>> getLEVEL_CODEC() {
         throw new AssertionError();
     }
 
     @Invoker("<init>")
-    static ItemEnchantments createInstance(Object2IntOpenHashMap<Holder<Enchantment>> enchantments, boolean showInTooltip) {
+    static ItemEnchantments createInstance(Object2IntOpenHashMap<Holder<Enchantment>> enchantments) {
         throw new AssertionError();
     }
 }

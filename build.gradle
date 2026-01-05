@@ -6,7 +6,7 @@ plugins {
     id 'java-library'
 //    id 'maven-publish'
     id 'net.neoforged.moddev' version '2.+'
-    id "me.modmuss50.mod-publish-plugin" version "0.8.+"
+    id "me.modmuss50.mod-publish-plugin" version "1.1.+"
 }
 
 tasks.named('wrapper', Wrapper).configure {
@@ -33,7 +33,7 @@ neoForge {
     // Specify the version of NeoForge to use.
     version = project.neo_version
 
-    parchment {
+    parchment { // rip parchment, mc is going to become unobfuscated
         mappingsVersion = project.parchment_mappings_version
         minecraftVersion = project.parchment_minecraft_version
     }
@@ -70,7 +70,8 @@ neoForge {
         }
 
         data {
-            data()
+            clientData()
+            serverData()
 
             // example of overriding the workingDirectory set in configureEach above, uncomment if you want to use it
             // gameDirectory = project.file('run-data')
@@ -146,7 +147,8 @@ dependencies {
     // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
     // http://www.gradle.org/docs/current/userguide/dependency_management.html
 
-    runtimeOnly "maven.modrinth:modernfix:$modernfix_version"
+    //runtimeOnly "maven.modrinth:modernfix:$modernfix_version"
+    runtimeOnly "maven.modrinth:sodium:$sodium_version"
     runtimeOnly "maven.modrinth:ferrite-core:$ferrite_core_version"
 }
 

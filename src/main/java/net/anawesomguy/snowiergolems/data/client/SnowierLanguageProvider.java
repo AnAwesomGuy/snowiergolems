@@ -1,7 +1,7 @@
 package net.anawesomguy.snowiergolems.data.client;
 
 import net.anawesomguy.snowiergolems.SnowierGolems;
-import net.minecraft.Util;
+import net.minecraft.util.Util;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.enchantment.Enchantment;
@@ -16,7 +16,7 @@ public abstract class SnowierLanguageProvider extends LanguageProvider {
     }
 
     protected void add(ResourceKey<Enchantment> key, String name) {
-        add(Util.makeDescriptionId("enchantment", key.location()), name);
+        add(Util.makeDescriptionId("enchantment", key.identifier()), name);
     }
 
     public static LanguageProvider[] getAllLanguageProviders(PackOutput output) {
@@ -72,10 +72,6 @@ public abstract class SnowierLanguageProvider extends LanguageProvider {
             add(SNOWY_LOYALTY, "雪人忠誠");
 
             add(PROJECTILE_ACCURACY.value().getDescriptionId(), "準確度");
-
-            // help me translate :(
-            //add("snowiergolems.advancements.build_enchanted_golem", "???");
-            //add("snowiergolems.advancements.build_enchanted_golem.description", "用附魔雪人帽堆雪人");
         }
     }
 

@@ -5,13 +5,15 @@ import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.OwnableEntity;
 import net.minecraft.world.entity.ai.goal.target.TargetGoal;
 import net.minecraft.world.entity.ai.targeting.TargetingConditions;
-import net.minecraft.world.entity.animal.SnowGolem;
+import net.minecraft.world.entity.animal.golem.SnowGolem;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.EnumSet;
 import java.util.Objects;
 
 public class SnowGolemOwnerHurtByTargetGoal extends TargetGoal {
     protected final OwnableEntity ownable;
+    @Nullable
     private LivingEntity ownerLastHurtBy;
     private int timestamp;
 

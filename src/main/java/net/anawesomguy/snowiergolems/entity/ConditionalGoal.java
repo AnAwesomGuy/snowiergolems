@@ -64,7 +64,7 @@ public final class ConditionalGoal extends Goal {
 
     @Override
     public String toString() {
-        return "ConditionalGoal[" + delegateGoal.toString() + ']';
+        return "ConditionalGoal[" + delegateGoal + ']';
     }
 
     @Override

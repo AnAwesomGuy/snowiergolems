@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [
-    {
-      "item": "minecraft:carved_pumpkin"
-    },
-    {
-      "item": "minecraft:snowball"
-    }
+    "minecraft:carved_pumpkin",
+    "minecraft:snowball"
   ],
   "result": {
     "components": {

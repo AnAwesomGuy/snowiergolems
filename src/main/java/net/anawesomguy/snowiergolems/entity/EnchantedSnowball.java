@@ -2,7 +2,6 @@ package net.anawesomguy.snowiergolems.entity;
 
 import net.anawesomguy.snowiergolems.GolemObjects;
 import net.minecraft.core.component.DataComponents;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -14,14 +13,16 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.animal.SnowGolem;
+import net.minecraft.world.entity.animal.golem.SnowGolem;
 import net.minecraft.world.entity.monster.Blaze;
-import net.minecraft.world.entity.projectile.Snowball;
+import net.minecraft.world.entity.projectile.throwableitemprojectile.Snowball;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantedItemInUse;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.ItemEnchantments;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.Vec3;
@@ -32,7 +33,7 @@ import java.util.Objects;
 public class EnchantedSnowball extends Snowball {
     protected static final EntityDataAccessor<Byte> PIERCE_LEVEL =
         SynchedEntityData.defineId(EnchantedSnowball.class, EntityDataSerializers.BYTE);
-    public static final int IGNITE_TICKS = 400; //2 seconds
+    public static final int IGNITE_TICKS = 400; // 2 seconds
 
     public float baseDamage = 0;
 
@@ -52,7 +53,8 @@ public class EnchantedSnowball extends Snowball {
         if (level instanceof ServerLevel && !shotFrom.isEmpty()) {
             EnchantedItemInUse itemInUse = getOrCreateItemInUse(null);
             EnchantmentHelper.runIterationOnItem(
-                shotFrom, (enchant, lvl) -> enchant.value().onProjectileSpawned((ServerLevel)level, lvl, itemInUse, this));
+                shotFrom,
+                (enchant, lvl) -> enchant.value().onProjectileSpawned((ServerLevel)level, lvl, itemInUse, this));
         }
     }
 
@@ -101,15 +103,15 @@ public class EnchantedSnowball extends Snowball {
     }
 
     @Override
-    public void addAdditionalSaveData(CompoundTag compound) {
-        super.addAdditionalSaveData(compound);
+    public void addAdditionalSaveData(ValueOutput output) {
+        super.addAdditionalSaveData(output);
         if (baseDamage != 0F)
-            compound.putDouble("damage", baseDamage);
+            output.putDouble("damage", baseDamage);
     }
 
     @Override
-    public void readAdditionalSaveData(CompoundTag compound) {
-        this.baseDamage = compound.getFloat("damage"); // 0 is default
+    public void readAdditionalSaveData(ValueInput input) {
+        this.baseDamage = input.getFloatOr("damage", 0F);
     }
 
     @Override
@@ -121,7 +123,7 @@ public class EnchantedSnowball extends Snowball {
             EnchantmentHelper.onHitBlock(
                 level,
                 shotFrom,
-                getOwner() instanceof LivingEntity owner ? owner : null,
+                getOwner() instanceof LivingEntity livingOwner ? livingOwner : null,
                 this,
                 null,
                 vec3,
@@ -138,29 +140,32 @@ public class EnchantedSnowball extends Snowball {
         ItemStack shotFrom = this.shotFrom;
         DamageSource source = this.damageSources().thrown(this, getOwner());
 
-        float damage;
-        if (level() instanceof ServerLevel level && !this.shotFrom.isEmpty()) {
-            // calculate damage with enchants
-            damage = EnchantmentHelper.modifyDamage(level, shotFrom, this, source, baseDamage);
-            if (entity instanceof Blaze)
-                damage += 3; // blaze's damage three more
+        float damage = baseDamage;
+        if (level() instanceof ServerLevel level) {
+            if (!shotFrom.isEmpty()) {
+                // calculate damage with enchants
+                damage = EnchantmentHelper.modifyDamage(level, shotFrom, this, source, damage);
+                if (entity instanceof Blaze)
+                    damage += 3; // blaze's damage three more
 
-            // AbstractArrow#doKnockback
-            if (entity instanceof LivingEntity living) {
-                double knockback = EnchantmentHelper.modifyKnockback(level, shotFrom, entity, source, 0F);
-                if (knockback > 0F) {
-                    double resistance = Math.max(0, 1 - living.getAttributeValue(Attributes.KNOCKBACK_RESISTANCE));
-                    Vec3 vec3 = getDeltaMovement().multiply(1, 0, 1).normalize().scale(knockback * resistance * 0.6);
-                    if (vec3.lengthSqr() > 0)
-                        entity.push(vec3.x, 0.1, vec3.z);
+                // AbstractArrow#doKnockback
+                if (entity instanceof LivingEntity living) {
+                    double knockback = EnchantmentHelper.modifyKnockback(level, shotFrom, entity, source, 0F);
+                    if (knockback > 0F) {
+                        double resistance = Math.max(0, 1 - living.getAttributeValue(Attributes.KNOCKBACK_RESISTANCE));
+                        Vec3 vec3 = getDeltaMovement().multiply(1, 0, 1)
+                                                      .normalize()
+                                                      .scale(knockback * resistance * 0.6);
+                        if (vec3.lengthSqr() > 0)
+                            entity.push(vec3.x, 0.1, vec3.z);
+                    }
                 }
-            }
 
-            // post attack effects (like freeze or smth)
-            EnchantmentHelper.doPostAttackEffectsWithItemSource(level, this, source, shotFrom);
-        } else
-            damage = baseDamage;
-        entity.hurt(source, damage);
+                // post attack effects (like freeze or smth)
+                EnchantmentHelper.doPostAttackEffectsWithItemSource(level, this, source, shotFrom);
+            }
+            entity.hurtServer(level, source, damage);
+        }
 
         if (isOnFire()) // ignite if on fire (flame enchant)
             entity.igniteForTicks(IGNITE_TICKS);

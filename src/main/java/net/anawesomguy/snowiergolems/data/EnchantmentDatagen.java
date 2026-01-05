@@ -116,6 +116,6 @@ public final class EnchantmentDatagen {
 
     public static void register(BootstrapContext<Enchantment> ctx, ResourceKey<Enchantment> key,
                                 Enchantment.Builder builder) {
-        ctx.register(key, builder.build(key.location()));
+        ctx.register(key, builder.build(key.identifier()));
     }
 }

@@ -2,9 +2,7 @@
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [
-    {
-      "item": "snowiergolems:golem_hat"
-    }
+    "snowiergolems:golem_hat"
   ],
   "result": {
     "count": 1,

@@ -9,10 +9,10 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.BiomeTags;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.attribute.EnvironmentAttributes;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.Attribute.Sentiment;
 import net.minecraft.world.entity.ai.attributes.RangedAttribute;
@@ -29,7 +29,7 @@ import static net.anawesomguy.snowiergolems.SnowierGolems.id;
  * @see EnchantmentDatagen
  */
 public interface GolemEnchantments {
-    ResourceLocation PROJECTILE_ACCURACY_ID = SnowierGolems.id("projectile_accuracy");
+    Identifier PROJECTILE_ACCURACY_ID = SnowierGolems.id("projectile_accuracy");
     Holder.Reference<Attribute> PROJECTILE_ACCURACY = Registry.registerForHolder(
         BuiltInRegistries.ATTRIBUTE,
         PROJECTILE_ACCURACY_ID,
@@ -73,7 +73,7 @@ public interface GolemEnchantments {
     /**
      * Makes snow golems resistant to "hot" biomes.
      *
-     * @see BiomeTags#SNOW_GOLEM_MELTS
+     * @see EnvironmentAttributes#SNOW_GOLEM_MELTS
      */
     ResourceKey<Enchantment> HEAT_RESISTANT = key("heat_resistance");
     /**

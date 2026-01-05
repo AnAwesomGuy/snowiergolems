@@ -4,7 +4,7 @@ import net.anawesomguy.snowiergolems.SnowierGolems;
 import net.anawesomguy.snowiergolems.data.LootProvider.GolemTomeLoot;
 import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.data.PackOutput;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import net.neoforged.neoforge.common.data.GlobalLootModifierProvider;
 import net.neoforged.neoforge.common.loot.AddTableLootModifier;
@@ -32,6 +32,6 @@ public class LootModifierProvider extends GlobalLootModifierProvider {
     }
 
     protected LootTableIdCondition tableIdCondition(String id) {
-        return (LootTableIdCondition)new LootTableIdCondition.Builder(ResourceLocation.parse(id)).build();
+        return (LootTableIdCondition)new LootTableIdCondition.Builder(Identifier.parse(id)).build();
     }
 }

@@ -6,7 +6,6 @@ import net.anawesomguy.snowiergolems.item.GolemTomeItem;
 import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.data.PackOutput;
 import net.minecraft.tags.EnchantmentTags;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.CompletableFuture;
@@ -14,10 +13,11 @@ import java.util.concurrent.CompletableFuture;
 import static net.minecraft.world.item.enchantment.Enchantments.*;
 
 public class EnchantmentTagsProvider extends net.minecraft.data.tags.EnchantmentTagsProvider {
-    public EnchantmentTagsProvider(PackOutput output, CompletableFuture<Provider> lookupProvider, ExistingFileHelper helper) {
-        super(output, lookupProvider, SnowierGolems.MODID, helper);
+    public EnchantmentTagsProvider(PackOutput output, CompletableFuture<Provider> lookupProvider) {
+        super(output, lookupProvider, SnowierGolems.MODID);
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     protected void addTags(@NotNull Provider provider) {
         this.tag(GolemTomeItem.SUPPORTED_ENCHANTS)

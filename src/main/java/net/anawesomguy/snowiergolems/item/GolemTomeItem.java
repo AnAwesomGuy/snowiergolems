@@ -19,18 +19,8 @@ public class GolemTomeItem extends Item {
     }
 
     @Override
-    public boolean isEnchantable(ItemStack stack) { // no enchants
-        return !hasEnchantments(stack);
-    }
-
-    @Override
-    public int getEnchantmentValue(ItemStack stack) {
-        return 1;
-    }
-
-    @Override
     public boolean isFoil(ItemStack stack) {
-        return hasEnchantments(stack);
+        return !stack.getOrDefault(DataComponents.STORED_ENCHANTMENTS, ItemEnchantments.EMPTY).isEmpty();
     }
 
     @Override
@@ -41,9 +31,5 @@ public class GolemTomeItem extends Item {
     @Override
     public boolean supportsEnchantment(ItemStack stack, Holder<Enchantment> enchantment) {
         return super.supportsEnchantment(stack, enchantment) || enchantment.is(SUPPORTED_ENCHANTS);
-    }
-
-    public static boolean hasEnchantments(ItemStack stack) {
-        return !stack.getOrDefault(DataComponents.STORED_ENCHANTMENTS, ItemEnchantments.EMPTY).isEmpty();
     }
 }

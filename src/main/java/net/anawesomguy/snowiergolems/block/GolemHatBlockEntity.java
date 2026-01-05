@@ -13,13 +13,12 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.Holder.Reference;
 import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.core.HolderLookup.RegistryLookup;
+import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap.Builder;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtOps;
-import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.Component.Serializer;
+import net.minecraft.network.chat.ComponentSerialization;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.RandomSource;
@@ -31,6 +30,8 @@ import net.minecraft.world.item.enchantment.ItemEnchantments;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.common.CommonHooks;
 import net.neoforged.neoforge.common.world.AuxiliaryLightManager;
 import org.jetbrains.annotations.NotNull;
@@ -53,8 +54,7 @@ public class GolemHatBlockEntity extends BlockEntity implements Nameable {
     public static final String ENCHANTMENTS_TAG = "enchantments";
     public static final String FACE_ID_TAG = "pumpkin_face_id";
 
-    private static final Codec<Object2IntOpenHashMap<Holder<Enchantment>>> ENCHANTS_CODEC =
-        ItemEnchantmentsAccessor.getLEVELS_CODEC();
+    private static final Codec<Object2IntOpenHashMap<Holder<Enchantment>>> ENCHANTS_CODEC = ItemEnchantmentsAccessor.getLEVEL_CODEC();
 
     @NotNull // can always be assumed to be mutable
     protected final Object2IntOpenHashMap<Holder<Enchantment>> enchantments = new Object2IntOpenHashMap<>();
@@ -101,60 +101,48 @@ public class GolemHatBlockEntity extends BlockEntity implements Nameable {
     }
 
     @Override
-    protected void saveAdditional(CompoundTag tag, Provider registries) {
-        super.saveAdditional(tag, registries);
+    protected void saveAdditional(ValueOutput output) {
+        super.saveAdditional(output);
 
         if (!enchantments.isEmpty())
-            tag.put(ENCHANTMENTS_TAG,
-                    ENCHANTS_CODEC.encodeStart(registries.createSerializationContext(NbtOps.INSTANCE), enchantments)
-                                  .getOrThrow());
+            output.store(ENCHANTMENTS_TAG, ENCHANTS_CODEC, enchantments);
 
-        if (this.name != null)
-            tag.putString("CustomName", Serializer.toJson(this.name, registries));
+        output.storeNullable("CustomName", ComponentSerialization.CODEC, name);
     }
 
     @Override
-    protected void loadAdditional(CompoundTag tag, Provider registries) {
-        super.loadAdditional(tag, registries);
-
-        if (tag.contains(ENCHANTMENTS_TAG))
-            ENCHANTS_CODEC.parse(registries.createSerializationContext(NbtOps.INSTANCE), tag.get(ENCHANTMENTS_TAG))
-                          .resultOrPartial(err -> SnowierGolems.LOGGER.error("Failed to load golem hat enchantments: '{}'", err))
-                          .ifPresent(this::setEnchantments);
-
-        if (tag.contains(FACE_ID_TAG, Tag.TAG_BYTE))
-            this.faceId = tag.getByte(FACE_ID_TAG);
-
-        if (tag.contains("CustomName", Tag.TAG_STRING))
-            this.name = parseCustomNameSafe(tag.getString("CustomName"), registries);
+    protected void loadAdditional(ValueInput input) {
+        super.loadAdditional(input);
+        input.read(ENCHANTMENTS_TAG, ENCHANTS_CODEC).ifPresent(this::setEnchantments);
+        this.faceId = input.getByteOr(FACE_ID_TAG, this.faceId);
+        this.name = parseCustomNameSafe(input, "CustomName");
     }
 
     @Override
-    protected void applyImplicitComponents(DataComponentInput componentInput) {
-        super.applyImplicitComponents(componentInput);
-        ItemEnchantments enchants = componentInput.get(DataComponents.ENCHANTMENTS);
+    protected void applyImplicitComponents(DataComponentGetter componentGetter) {
+        super.applyImplicitComponents(componentGetter);
+        ItemEnchantments enchants = componentGetter.get(DataComponents.ENCHANTMENTS);
         if (enchants != null && !enchants.isEmpty())
             setEnchantments(enchants.entrySet());
-        this.faceId = componentInput.getOrDefault(GolemObjects.PUMPKIN_FACE, (byte)-1);
-        this.name = componentInput.get(DataComponents.CUSTOM_NAME);
+        this.faceId = componentGetter.getOrDefault(GolemObjects.PUMPKIN_FACE, (byte)-1);
+        this.name = componentGetter.get(DataComponents.CUSTOM_NAME);
     }
 
     @Override
     protected void collectImplicitComponents(Builder components) {
         super.collectImplicitComponents(components);
-        components.set(DataComponents.ENCHANTMENTS,
-                       ItemEnchantmentsAccessor.createInstance(this.enchantments, true));
+        components.set(DataComponents.ENCHANTMENTS, ItemEnchantmentsAccessor.createInstance(this.enchantments));
         components.set(GolemObjects.PUMPKIN_FACE, this.faceId);
         components.set(DataComponents.CUSTOM_NAME, this.name);
     }
 
     @SuppressWarnings("deprecation")
     @Override
-    public void removeComponentsFromTag(CompoundTag tag) {
-        super.removeComponentsFromTag(tag);
-        tag.remove(ENCHANTMENTS_TAG);
-        tag.remove(FACE_ID_TAG);
-        tag.remove("CustomName");
+    public void removeComponentsFromTag(ValueOutput output) {
+        super.removeComponentsFromTag(output);
+        output.discard(ENCHANTMENTS_TAG);
+        output.discard(FACE_ID_TAG);
+        output.discard("CustomName");
     }
 
     @Override
@@ -182,11 +170,11 @@ public class GolemHatBlockEntity extends BlockEntity implements Nameable {
         this.name = customName;
     }
 
-
     public byte getOrCreateFaceId() {
         if (isValidFaceId(faceId))
             return faceId;
-        return faceId = calculateFaceId(level == null ? null : level.random, this::getLevel, enchantments.keySet(), level);
+        return faceId = calculateFaceId(level == null ? null : level.random, this::getLevel, enchantments.keySet(),
+                                        level);
     }
 
     public static boolean isValidFaceId(byte id) {
@@ -293,6 +281,7 @@ public class GolemHatBlockEntity extends BlockEntity implements Nameable {
         update(null);
     }
 
+    @Nullable
     public Holder<Enchantment> toHolder(ResourceKey<Enchantment> key) {
         Objects.requireNonNull(key);
         if (level != null)

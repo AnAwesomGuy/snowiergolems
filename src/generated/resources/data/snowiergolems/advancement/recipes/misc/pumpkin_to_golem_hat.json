@@ -1,14 +1,11 @@
 {
   "parent": "minecraft:recipes/root",
   "criteria": {
-    "has_snowball_and_pumpkin": {
+    "has_pumpkin": {
       "conditions": {
         "items": [
           {
-            "items": [
-              "minecraft:carved_pumpkin",
-              "minecraft:snowball"
-            ]
+            "items": "minecraft:carved_pumpkin"
           }
         ]
       },
@@ -24,7 +21,7 @@
   "requirements": [
     [
       "has_the_recipe",
-      "has_snowball_and_pumpkin"
+      "has_pumpkin"
     ]
   ],
   "rewards": {

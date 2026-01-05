@@ -1,7 +1,6 @@
 package net.anawesomguy.snowiergolems.data;
 
-import net.anawesomguy.snowiergolems.data.client.BlockStateProvider;
-import net.anawesomguy.snowiergolems.data.client.ItemModelProvider;
+import net.anawesomguy.snowiergolems.data.client.ModelProvider;
 import net.anawesomguy.snowiergolems.data.client.SnowierLanguageProvider;
 import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.core.RegistrySetBuilder;
@@ -11,22 +10,28 @@ import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.fml.common.EventBusSubscriber.Bus;
 import net.neoforged.neoforge.common.data.DatapackBuiltinEntriesProvider;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
 
 import java.util.concurrent.CompletableFuture;
 
 import static net.anawesomguy.snowiergolems.SnowierGolems.MODID;
 
-@EventBusSubscriber(modid = MODID, bus = Bus.MOD)
+@EventBusSubscriber(modid = MODID)
 public final class SnowierGolemsDatagen {
     @SubscribeEvent
-    private static void gatherData(GatherDataEvent event) {
+    private static void gatherData(GatherDataEvent.Client event) {
         DataGenerator gen = event.getGenerator();
         PackOutput output = gen.getPackOutput();
-        ExistingFileHelper existingFileHelper = event.getExistingFileHelper();
+
+        addProviders(gen, new ModelProvider(output));
+        addProviders(gen, SnowierLanguageProvider.getAllLanguageProviders(output));
+    }
+
+    @SubscribeEvent
+    private static void gatherData(GatherDataEvent.Server event) {
+        DataGenerator gen = event.getGenerator();
+        PackOutput output = gen.getPackOutput();
 
         RegistrySetBuilder registrySet =
             new RegistrySetBuilder().add(Registries.ENCHANTMENT, EnchantmentDatagen::datagenEnchantments);
@@ -35,27 +40,21 @@ public final class SnowierGolemsDatagen {
             new DatapackBuiltinEntriesProvider(output, event.getLookupProvider(), registrySet, null);
         CompletableFuture<Provider> lookupProvider = registriesProvider.getRegistryProvider();
 
-        BlockTagsProvider blockTags = new BlockTagsProvider(output, lookupProvider, existingFileHelper);
-        addProviders(event.includeServer(), gen,
+        BlockTagsProvider blockTags = new BlockTagsProvider(output, lookupProvider);
+        addProviders(gen,
                      registriesProvider,
                      blockTags,
-                     new ItemTagsProvider(output, lookupProvider, blockTags.contentsGetter(), existingFileHelper),
-                     new EntityTypeTagsProvider(output, lookupProvider, existingFileHelper),
-                     new EnchantmentTagsProvider(output, lookupProvider, existingFileHelper),
-                     new RecipeProvider(output, lookupProvider),
+                     new ItemTagsProvider(output, lookupProvider, blockTags.contentsGetter()),
+                     new EntityTypeTagsProvider(output, lookupProvider),
+                     new EnchantmentTagsProvider(output, lookupProvider),
+                     new RecipeProvider.Runner(output, lookupProvider),
                      new LootProvider(output, lookupProvider),
                      new LootModifierProvider(output, lookupProvider),
-                     new AdvancementProvider(output, lookupProvider, existingFileHelper));
-        addProviders(event.includeClient(), gen,
-                     new BlockStateProvider(output, existingFileHelper),
-                     new ItemModelProvider(output, existingFileHelper));
-        addProviders(event.includeClient(), gen,
-                     SnowierLanguageProvider.getAllLanguageProviders(output));
+                     new AdvancementProvider(output, lookupProvider));
     }
 
-    private static void addProviders(boolean run, DataGenerator gen, DataProvider... providers) {
-        if (run)
-            for (DataProvider provider : providers)
-                gen.addProvider(true, provider);
+    private static void addProviders(DataGenerator gen, DataProvider... providers) {
+        for (DataProvider provider : providers)
+            gen.addProvider(true, provider);
     }
 }

@@ -19,12 +19,13 @@ import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.LootTable.Builder;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
 import net.minecraft.world.level.storage.loot.functions.CopyComponentsFunction;
-import net.minecraft.world.level.storage.loot.functions.CopyComponentsFunction.Source;
 import net.minecraft.world.level.storage.loot.functions.EnchantWithLevelsFunction;
 import net.minecraft.world.level.storage.loot.functions.SetItemCountFunction;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.Map;
@@ -48,10 +49,12 @@ public class LootProvider extends LootTableProvider {
         }
 
         @Override
+        @NotNull
         protected Iterable<Block> getKnownBlocks() {
             return BuiltInRegistries.BLOCK.entrySet()
                                           .stream()
-                                          .filter(entry -> SnowierGolems.MODID.equals(entry.getKey().location().getNamespace()))
+                                          .filter(entry -> SnowierGolems.MODID.equals(
+                                              entry.getKey().identifier().getNamespace()))
                                           .map(Map.Entry::getValue)::iterator;
         }
 
@@ -67,7 +70,8 @@ public class LootProvider extends LootTableProvider {
                                  LootPool.lootPool()
                                          .setRolls(ConstantValue.exactly(1F))
                                          .add(LootItem.lootTableItem(golemHat)
-                                                      .apply(CopyComponentsFunction.copyComponents(Source.BLOCK_ENTITY)
+                                                      .apply(CopyComponentsFunction.copyComponentsFromBlockEntity(
+                                                                                       LootContextParams.BLOCK_ENTITY)
                                                                                    .include(DataComponents.CUSTOM_NAME)
                                                                                    .include(DataComponents.ENCHANTMENTS)
                                                                                    .include(GolemObjects.PUMPKIN_FACE)))
@@ -103,7 +107,8 @@ public class LootProvider extends LootTableProvider {
                          .withPool(
                              LootPool.lootPool()
                                      .add(LootItem.lootTableItem(Items.SNOWBALL)
-                                                  .apply(SetItemCountFunction.setCount(UniformGenerator.between(2F, 5F))))
+                                                  .apply(
+                                                      SetItemCountFunction.setCount(UniformGenerator.between(2F, 5F))))
                                      .setBonusRolls(UniformGenerator.between(0F, 3F))
                          ));
         }

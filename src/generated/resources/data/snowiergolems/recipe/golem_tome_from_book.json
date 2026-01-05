@@ -2,15 +2,9 @@
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [
-    {
-      "item": "minecraft:book"
-    },
-    {
-      "item": "minecraft:snowball"
-    },
-    {
-      "item": "minecraft:carved_pumpkin"
-    }
+    "minecraft:book",
+    "minecraft:snowball",
+    "minecraft:carved_pumpkin"
   ],
   "result": {
     "count": 1,
