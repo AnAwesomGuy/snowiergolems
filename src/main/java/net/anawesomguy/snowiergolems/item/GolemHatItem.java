@@ -20,6 +20,8 @@ public class GolemHatItem extends BlockItem {
         super(block, properties);
     }
 
+
+
     @Override
     public @Nullable EquipmentSlot getEquipmentSlot(ItemStack stack) {
         return EquipmentSlot.HEAD;
@@ -30,11 +32,12 @@ public class GolemHatItem extends BlockItem {
         return super.supportsEnchantment(stack, enchantment) || enchantment.is(GolemTomeItem.SUPPORTED_ENCHANTS);
     }
 
-    // public void verifyComponentsAfterLoad(ItemStack stack) {
-    //     Byte b = stack.get(GolemObjects.PUMPKIN_FACE);
-    //     if (b != null && !GolemHatBlockEntity.isValidFaceId(b))
-    //         setPumpkinFace(stack);
-    // }
+    @Override
+    public ItemStack getDefaultInstance() {
+        ItemStack stack = super.getDefaultInstance();
+        setPumpkinFace(stack);
+        return stack;
+    }
 
     public static void setPumpkinFace(ItemStack stack) {
         stack.set(GolemObjects.PUMPKIN_FACE, GolemHatBlockEntity.calculateFaceId(null, stack.getTagEnchantments()));
@@ -55,7 +58,7 @@ public class GolemHatItem extends BlockItem {
     }
 
     public ItemStack defaultStackWithoutFace() {
-        ItemStack stack = this.getDefaultInstance();
+        ItemStack stack = super.getDefaultInstance();
         stack.remove(GolemObjects.PUMPKIN_FACE);
         return stack;
     }

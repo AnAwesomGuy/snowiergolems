@@ -67,6 +67,7 @@ public final class GolemObjects {
     public static final GolemHatItem GOLEM_HAT_ITEM = new GolemHatItem(
         GOLEM_HAT,
         new Item.Properties().stacksTo(1)
+                             .useBlockDescriptionPrefix()
                              .attributes(ItemAttributeModifiers.EMPTY)
                              .component(PUMPKIN_FACE, (byte)-1)
                              .component(DataComponents.EQUIPPABLE,
@@ -105,7 +106,7 @@ public final class GolemObjects {
 
         event.register(Registries.ITEM, helper -> {
             helper.register(GOLEM_HAT_ID, GOLEM_HAT_ITEM);
-            helper.register(id("golem_tome"), GOLEM_TOME);
+            helper.register(GOLEM_TOME_ID, GOLEM_TOME);
         });
 
         event.register(Registries.BLOCK_ENTITY_TYPE, helper -> {

@@ -24,15 +24,11 @@ public final class SnowierGolemsDatagen {
         DataGenerator gen = event.getGenerator();
         PackOutput output = gen.getPackOutput();
 
+        // client
         addProviders(gen, new ModelProvider(output));
         addProviders(gen, SnowierLanguageProvider.getAllLanguageProviders(output));
-    }
 
-    @SubscribeEvent
-    private static void gatherData(GatherDataEvent.Server event) {
-        DataGenerator gen = event.getGenerator();
-        PackOutput output = gen.getPackOutput();
-
+        // server
         RegistrySetBuilder registrySet =
             new RegistrySetBuilder().add(Registries.ENCHANTMENT, EnchantmentDatagen::datagenEnchantments);
         @SuppressWarnings("DataFlowIssue")

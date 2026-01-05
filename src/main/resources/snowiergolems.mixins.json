@@ -6,14 +6,8 @@
     "defaultRequire": 1
   },
   "mixins": [
-    "AnvilMenuMixin",
-    "CarvedPumpkinAccessor",
-    "CarvedPumpkinMixin",
-    "EnchantmentHelperMixin",
-    "GrindstoneMenuMixin",
-    "ItemEnchantmentsAccessor",
-    "LivingEntityMixin",
-    "SnowGolemMixin"
+    "AnvilMenuMixin", "CarvedPumpkinAccessor", "CarvedPumpkinMixin", "EnchantmentHelperMixin", "GrindstoneMenuMixin",
+    "ItemEnchantmentsAccessor", "ItemStackMixin", "LivingEntityMixin", "SnowGolemMixin"
   ],
   "client": [
     "client.SnowGolemHeadLayerMixin"

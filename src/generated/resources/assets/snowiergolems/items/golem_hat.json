@@ -1,0 +1,9 @@
+{
+  "model": {
+    "type": "minecraft:special",
+    "base": "snowiergolems:item/golem_hat",
+    "model": {
+      "type": "snowiergolems:golem_hat"
+    }
+  }
+}

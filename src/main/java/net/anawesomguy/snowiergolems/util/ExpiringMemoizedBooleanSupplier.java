@@ -15,7 +15,7 @@ public final class ExpiringMemoizedBooleanSupplier implements BooleanSupplier {
         if (callsTilExpire < 0)
             throw new IllegalArgumentException("callsTilExpire negative: " + callsTilExpire);
         this.delegate = Objects.requireNonNull(delegate);
-        this.callsTilExpire = callsTilExpire;
+        this.calls = this.callsTilExpire = callsTilExpire;
     }
 
     @Override

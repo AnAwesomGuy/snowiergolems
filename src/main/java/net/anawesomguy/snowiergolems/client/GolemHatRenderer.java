@@ -4,6 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.anawesomguy.snowiergolems.block.GolemHatBlock;
 import net.anawesomguy.snowiergolems.block.GolemHatBlockEntity;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.block.model.BlockModelPart;
 import net.minecraft.client.renderer.block.model.BlockStateModel;
@@ -77,6 +78,9 @@ public class GolemHatRenderer implements BlockEntityRenderer<GolemHatBlockEntity
         renderState.hasFlame = golemHat.hasEnchantment(Enchantments.FLAME);
         renderState.hasFoil = golemHat.hasEnchantments();
         renderState.faceId = golemHat.getOrCreateFaceId();
+        renderState.lightCoords = golemHat.getLevel() != null ? LevelRenderer.getLightColor(golemHat.getLevel(),
+                                                                                            golemHat.getBlockPos()
+                                                                                                    .above()) : 0xF000F0;
     }
 
     @Override

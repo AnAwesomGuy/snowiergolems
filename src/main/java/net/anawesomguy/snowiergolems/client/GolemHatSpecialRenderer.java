@@ -6,7 +6,10 @@ import net.anawesomguy.snowiergolems.GolemObjects;
 import net.anawesomguy.snowiergolems.SnowierGolems;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.block.model.BlockModelPart;
 import net.minecraft.client.renderer.special.SpecialModelRenderer;
+import net.minecraft.core.Direction;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.item.ItemDisplayContext;
@@ -44,8 +47,17 @@ public class GolemHatSpecialRenderer implements SpecialModelRenderer<DataCompone
                                 light, overlay, outline);
     }
 
-    @Override
+    @Override // cube extents
     public void getExtents(Consumer<Vector3fc> consumer) {
+        BlockModelPart model = GolemHatRenderer.getModel((byte)0, Direction.NORTH, renderer.modelManager);
+        Direction.stream().forEach(d -> {
+            for (BakedQuad quad : model.getQuads(d)) {
+                consumer.accept(quad.position0());
+                consumer.accept(quad.position1());
+                consumer.accept(quad.position2());
+                consumer.accept(quad.position3());
+            }
+        });
     }
 
     @Override
