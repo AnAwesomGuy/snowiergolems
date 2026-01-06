@@ -40,8 +40,8 @@ public class GolemHatSpecialRenderer implements SpecialModelRenderer<DataCompone
             flame = enchantments.getLevel(
                 SnowierGolems.getAsHolder(Enchantments.FLAME, Minecraft.getInstance().level)) > 0;
         }
-        stack.translate(0.5F, 0.5F, 0.5F);
         stack.rotateAround(Axis.YP.rotationDegrees(180F), 0.5F, 0.5F, 0.5F); // 180 deg
+        stack.translate(0.5F, 0.5F, 0.5F);
         SnowierGolemsClient.StandaloneGolemHatModel.TRANSFORMS.getTransform(displayContext)
                                                               .apply(displayContext.leftHand(), stack.last());
         GolemHatRenderer.submit(stack, nodeCollector, renderer.modelManager,

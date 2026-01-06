@@ -221,7 +221,7 @@ jar { exclude "**/$mod_id/data/**" }
 publishMods {
     file = jar.archiveFile
     additionalFiles.from sourcesJar
-    type = STABLE
+    type = ALPHA
     changelog = project.changelog
     modLoaders.add 'neoforge'
     displayName = mod_name + mod_version
