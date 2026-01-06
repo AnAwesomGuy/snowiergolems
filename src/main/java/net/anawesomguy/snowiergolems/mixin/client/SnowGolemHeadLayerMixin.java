@@ -5,20 +5,25 @@ import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
 import com.llamalad7.mixinextras.sugar.Share;
 import com.llamalad7.mixinextras.sugar.ref.LocalRef;
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.anawesomguy.snowiergolems.GolemObjects;
 import net.anawesomguy.snowiergolems.client.GolemHatRenderer;
 import net.anawesomguy.snowiergolems.client.SnowierGolemsClient;
 import net.anawesomguy.snowiergolems.item.GolemHatItem;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.renderer.block.model.BlockStateModel;
 import net.minecraft.client.renderer.entity.layers.SnowGolemHeadLayer;
 import net.minecraft.client.renderer.entity.state.SnowGolemRenderState;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.Objects;
 
@@ -36,12 +41,19 @@ public abstract class SnowGolemHeadLayerMixin {
     }
 
     @WrapOperation(method = "submit(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/SubmitNodeCollector;ILnet/minecraft/client/renderer/entity/state/SnowGolemRenderState;FF)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/block/BlockRenderDispatcher;getBlockModel(Lnet/minecraft/world/level/block/state/BlockState;)Lnet/minecraft/client/renderer/block/model/BlockStateModel;"))
-    private BlockStateModel changeRenderedHat(BlockRenderDispatcher blockRenderer, BlockState state, Operation<BlockStateModel> original, @Local(argsOnly = true) SnowGolemRenderState golem, @Share("hatStack") LocalRef<ItemStack> hatStackRef) {
+    private BlockStateModel changeRenderedHat(BlockRenderDispatcher blockRenderer, BlockState state, Operation<BlockStateModel> original, @Share("hatStack") LocalRef<ItemStack> hatStackRef) {
         ItemStack stack = hatStackRef.get();
         if (stack.isEmpty())
             return original.call(blockRenderer, state);
         return GolemHatRenderer.toBlockStateModel(
             GolemHatRenderer.getModel(stack.getOrDefault(GolemObjects.PUMPKIN_FACE, (byte)0), Direction.NORTH,
                                       blockRenderer.getBlockModelShaper().getModelManager()));
+    }
+
+    @Inject(method = "submit(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/SubmitNodeCollector;ILnet/minecraft/client/renderer/entity/state/SnowGolemRenderState;FF)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/ItemBlockRenderTypes;getRenderType(Lnet/minecraft/world/level/block/state/BlockState;)Lnet/minecraft/client/renderer/rendertype/RenderType;"))
+    private void changeRenderedHat(PoseStack stack, SubmitNodeCollector collector, int light, SnowGolemRenderState golem, float yRot, float xRot, CallbackInfo ci, @Local(ordinal = 1) int overlay, @Local BlockStateModel model, @Share("hatStack") LocalRef<ItemStack> hatStackRef) {
+        if (hatStackRef.get().hasFoil())
+            collector.submitBlockModel(stack, RenderTypes.entityGlint(), model, 0F, 0F, 0F,
+                                       light, overlay, golem.lightCoords);
     }
 }

@@ -118,12 +118,12 @@ public final class SnowierGolemsClient {
     public record StandaloneGolemHatModel(Direction facing, Material face, ModelDebugName debugName)
         implements UnbakedStandaloneModel<BlockModelPart> {
         private static final Identifier CUBE = Identifier.withDefaultNamespace("block/cube");
-        private static final ItemTransforms TRANSFORMS;
+        public static final ItemTransforms TRANSFORMS;
 
         static {
             // see models/block/golem_hat.json
             Vector3fc rot180 = new Vector3f(0F, 180F, 0F);
-            ItemTransform thirdPerson = new ItemTransform(new Vector3f(75F, 315F, 0F), new Vector3f(0F, 2.5F, 0F),
+            ItemTransform thirdPerson = new ItemTransform(new Vector3f(75F, 315F, 0F), DEFAULT_TRANSLATION,
                                                           new Vector3f(0.375F), DEFAULT_ROTATION);
             ItemTransform firstPerson = new ItemTransform(new Vector3f(0F, 315F, 0F), DEFAULT_TRANSLATION,
                                                           new Vector3f(0.4F), DEFAULT_ROTATION);

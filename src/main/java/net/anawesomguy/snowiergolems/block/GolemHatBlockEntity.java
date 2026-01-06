@@ -1,13 +1,8 @@
 package net.anawesomguy.snowiergolems.block;
 
-import com.mojang.serialization.Codec;
-import it.unimi.dsi.fastutil.objects.Object2IntMap;
-import it.unimi.dsi.fastutil.objects.Object2IntMap.Entry;
-import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.anawesomguy.snowiergolems.GolemObjects;
 import net.anawesomguy.snowiergolems.SnowierGolems;
 import net.anawesomguy.snowiergolems.enchant.GolemEnchantments;
-import net.anawesomguy.snowiergolems.mixin.ItemEnchantmentsAccessor;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Holder.Reference;
@@ -54,10 +49,8 @@ public class GolemHatBlockEntity extends BlockEntity implements Nameable {
     public static final String ENCHANTMENTS_TAG = "enchantments";
     public static final String FACE_ID_TAG = "pumpkin_face_id";
 
-    private static final Codec<Object2IntOpenHashMap<Holder<Enchantment>>> ENCHANTS_CODEC = ItemEnchantmentsAccessor.getLEVEL_CODEC();
-
     @NotNull // can always be assumed to be mutable
-    protected final Object2IntOpenHashMap<Holder<Enchantment>> enchantments = new Object2IntOpenHashMap<>();
+    protected ItemEnchantments enchantments = ItemEnchantments.EMPTY;
     @Nullable
     protected Component name;
     protected byte faceId;
@@ -105,7 +98,7 @@ public class GolemHatBlockEntity extends BlockEntity implements Nameable {
         super.saveAdditional(output);
 
         if (!enchantments.isEmpty())
-            output.store(ENCHANTMENTS_TAG, ENCHANTS_CODEC, enchantments);
+            output.store(ENCHANTMENTS_TAG, ItemEnchantments.CODEC, enchantments);
 
         output.storeNullable("CustomName", ComponentSerialization.CODEC, name);
     }
@@ -113,7 +106,7 @@ public class GolemHatBlockEntity extends BlockEntity implements Nameable {
     @Override
     protected void loadAdditional(ValueInput input) {
         super.loadAdditional(input);
-        input.read(ENCHANTMENTS_TAG, ENCHANTS_CODEC).ifPresent(this::setEnchantments);
+        input.read(ENCHANTMENTS_TAG, ItemEnchantments.CODEC).ifPresent(this::setEnchantments);
         this.faceId = input.getByteOr(FACE_ID_TAG, this.faceId);
         this.name = parseCustomNameSafe(input, "CustomName");
     }
@@ -123,7 +116,7 @@ public class GolemHatBlockEntity extends BlockEntity implements Nameable {
         super.applyImplicitComponents(componentGetter);
         ItemEnchantments enchants = componentGetter.get(DataComponents.ENCHANTMENTS);
         if (enchants != null && !enchants.isEmpty())
-            setEnchantments(enchants.entrySet());
+            this.enchantments = enchants;
         this.faceId = componentGetter.getOrDefault(GolemObjects.PUMPKIN_FACE, (byte)-1);
         this.name = componentGetter.get(DataComponents.CUSTOM_NAME);
     }
@@ -131,7 +124,7 @@ public class GolemHatBlockEntity extends BlockEntity implements Nameable {
     @Override
     protected void collectImplicitComponents(Builder components) {
         super.collectImplicitComponents(components);
-        components.set(DataComponents.ENCHANTMENTS, ItemEnchantmentsAccessor.createInstance(this.enchantments));
+        components.set(DataComponents.ENCHANTMENTS, this.enchantments);
         components.set(GolemObjects.PUMPKIN_FACE, this.faceId);
         components.set(DataComponents.CUSTOM_NAME, this.name);
     }
@@ -235,49 +228,28 @@ public class GolemHatBlockEntity extends BlockEntity implements Nameable {
         for (Holder<Enchantment> key : keySet)
             if (key.is(enchantment))
                 return true;
-        // double check
-        Holder<Enchantment> theirHolder = toHolder(enchantment);
-        if (theirHolder != null) {
-            Enchantment holderValue = theirHolder.value();
-            for (Holder<Enchantment> ourHolder : keySet)
-                if (ourHolder.value() == holderValue)
-                    return true;
-        }
         return false;
     }
 
     public int getLevel(ResourceKey<Enchantment> enchantment) {
-        return this.enchantments.getInt(toHolder(enchantment));
+        Holder<Enchantment> holder = toHolder(enchantment);
+        return holder == null ? 0 : this.enchantments.getLevel(holder);
     }
 
     public boolean hasEnchantment(Holder<Enchantment> enchantment) {
-        return this.enchantments.containsKey(enchantment);
+        return this.enchantments.getLevel(enchantment) > 0;
     }
 
     public int getLevel(Holder<Enchantment> enchantment) {
-        return this.enchantments.getInt(enchantment);
+        return this.enchantments.getLevel(enchantment);
     }
 
-    public Object2IntMap<Holder<Enchantment>> getEnchantments() {
+    public ItemEnchantments getEnchantments() {
         return this.enchantments;
     }
 
-    public void setEnchantments(@Nullable Object2IntMap<Holder<Enchantment>> enchants) {
-        Object2IntOpenHashMap<Holder<Enchantment>> enchantments = this.enchantments;
-        enchantments.clear();
-        if (enchants != null && !enchants.isEmpty())
-            enchantments.putAll(enchants);
-        enchantments.trim();
-        update(null);
-    }
-
-    public void setEnchantments(@Nullable Set<Entry<Holder<Enchantment>>> enchants) {
-        Object2IntOpenHashMap<Holder<Enchantment>> enchantments = this.enchantments;
-        enchantments.clear();
-        if (enchants != null && !enchants.isEmpty())
-            for (Entry<Holder<Enchantment>> entry : enchants)
-                enchantments.put(entry.getKey(), entry.getIntValue());
-        enchantments.trim();
+    public void setEnchantments(@Nullable ItemEnchantments enchants) {
+        this.enchantments = enchants == null ? ItemEnchantments.EMPTY : enchants;
         update(null);
     }
 

@@ -1,6 +1,7 @@
 package net.anawesomguy.snowiergolems.client;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Axis;
 import net.anawesomguy.snowiergolems.block.GolemHatBlock;
 import net.anawesomguy.snowiergolems.block.GolemHatBlockEntity;
 import net.minecraft.client.Minecraft;
@@ -54,11 +55,17 @@ public class GolemHatRenderer implements BlockEntityRenderer<GolemHatBlockEntity
     public static void submit(PoseStack stack, SubmitNodeCollector collector, ModelManager modelManager, BlockState state, byte faceId, boolean foil, boolean flame, int light, int overlay, int outlineColor) {
         BlockModelPart model = getModel(faceId, state.getValue(GolemHatBlock.FACING), modelManager);
         collector.submitBlockModel(stack,
-                                   foil ? RenderTypes.glint() :
-                                       RenderTypeHelper.getEntityRenderType(model.getRenderType(state)),
+                                   RenderTypeHelper.getEntityRenderType(model.getRenderType(state)),
                                    toBlockStateModel(model),
                                    0F, 0F, 0F,
                                    light, overlay, outlineColor);
+
+        if (foil)
+            collector.submitBlockModel(stack,
+                                       RenderTypes.entityGlint(),
+                                       toBlockStateModel(model),
+                                       0F, 0F, 0F,
+                                       light, overlay, outlineColor);
 
         if (flame) {
             stack.translate(0.1F, 1F, 0.1F);
@@ -85,6 +92,7 @@ public class GolemHatRenderer implements BlockEntityRenderer<GolemHatBlockEntity
 
     @Override
     public void submit(GolemHatRenderState golemHat, PoseStack stack, SubmitNodeCollector nodeCollector, CameraRenderState camera) {
+        stack.rotateAround(Axis.YP.rotationDegrees(180F), 0.5F, 0.5F, 0.5F); // 180 deg
         submit(stack, nodeCollector, modelManager,
                golemHat.blockState, golemHat.faceId, golemHat.hasFoil, golemHat.hasFlame,
                golemHat.lightCoords, OverlayTexture.NO_OVERLAY, 0);

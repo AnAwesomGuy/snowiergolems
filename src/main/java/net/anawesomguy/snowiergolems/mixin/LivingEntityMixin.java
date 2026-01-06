@@ -23,8 +23,8 @@ public abstract class LivingEntityMixin {
     @Inject(method = "onEquipItem", at = @At("HEAD"))
     private void setPumpkinOnEquip(EquipmentSlot slot, ItemStack oldItem, ItemStack newItem, CallbackInfo ci) {
         //noinspection ConstantValue
-        if ((Object)this instanceof SnowGolem golem && slot == EquipmentSlot.HEAD && !newItem.isEmpty())
-            golem.setPumpkin(true);
+        if ((Object)this instanceof SnowGolem golem && slot == EquipmentSlot.HEAD)
+            golem.setPumpkin(!newItem.isEmpty()); // unset pumpkin when our helmet is sheared off
     }
 
     @WrapOperation(method = "getWeaponItem", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;getMainHandItem()Lnet/minecraft/world/item/ItemStack;"))
