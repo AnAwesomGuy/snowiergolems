@@ -224,7 +224,7 @@ publishMods {
     type = ALPHA
     changelog = project.changelog
     modLoaders.add 'neoforge'
-    displayName = mod_name + mod_version
+    displayName = "$mod_name $mod_version"
     version = "$mod_version+$minecraft_version"
 
     modrinth {
