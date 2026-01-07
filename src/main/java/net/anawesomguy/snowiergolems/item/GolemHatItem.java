@@ -1,7 +1,5 @@
 package net.anawesomguy.snowiergolems.item;
 
-import it.unimi.dsi.fastutil.objects.Object2IntMap;
-import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.anawesomguy.snowiergolems.GolemObjects;
 import net.anawesomguy.snowiergolems.block.GolemHatBlockEntity;
 import net.minecraft.core.Holder;
@@ -10,6 +8,7 @@ import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentInstance;
+import net.minecraft.world.item.enchantment.ItemEnchantments;
 import net.minecraft.world.level.block.Block;
 import org.jetbrains.annotations.Nullable;
 
@@ -19,8 +18,6 @@ public class GolemHatItem extends BlockItem {
     public GolemHatItem(Block block, Properties properties) {
         super(block, properties);
     }
-
-
 
     @Override
     public @Nullable EquipmentSlot getEquipmentSlot(ItemStack stack) {
@@ -46,14 +43,9 @@ public class GolemHatItem extends BlockItem {
     @Override
     public ItemStack applyEnchantments(ItemStack stack, List<EnchantmentInstance> enchantments) {
         ItemStack newStack = super.applyEnchantments(stack, enchantments);
-        Object2IntMap<Holder<Enchantment>> enchants = enchantments.stream()
-                                                                  .collect(Object2IntOpenHashMap::new,
-                                                                           (map, enchant) -> map.put(
-                                                                               enchant.enchantment(),
-                                                                               enchant.level()),
-                                                                           Object2IntMap::putAll);
+        ItemEnchantments tagEnchantments = stack.getTagEnchantments();
         newStack.set(GolemObjects.PUMPKIN_FACE,
-                     GolemHatBlockEntity.calculateFaceId(null, enchants::getInt, enchants.keySet(), null));
+                     GolemHatBlockEntity.calculateFaceId(null, tagEnchantments));
         return newStack;
     }
 

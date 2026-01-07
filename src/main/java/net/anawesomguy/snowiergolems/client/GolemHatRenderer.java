@@ -1,11 +1,11 @@
 package net.anawesomguy.snowiergolems.client;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Axis;
 import net.anawesomguy.snowiergolems.block.GolemHatBlock;
 import net.anawesomguy.snowiergolems.block.GolemHatBlockEntity;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.LevelRenderer;
+import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.block.model.BlockModelPart;
 import net.minecraft.client.renderer.block.model.BlockStateModel;
@@ -54,23 +54,25 @@ public class GolemHatRenderer implements BlockEntityRenderer<GolemHatBlockEntity
 
     public static void submit(PoseStack stack, SubmitNodeCollector collector, ModelManager modelManager, BlockState state, byte faceId, boolean foil, boolean flame, int light, int overlay, int outlineColor) {
         BlockModelPart model = getModel(faceId, state.getValue(GolemHatBlock.FACING), modelManager);
+        BlockStateModel blockStateModel = toBlockStateModel(model);
         collector.submitBlockModel(stack,
                                    RenderTypeHelper.getEntityRenderType(model.getRenderType(state)),
-                                   toBlockStateModel(model),
+                                   blockStateModel,
                                    0F, 0F, 0F,
                                    light, overlay, outlineColor);
 
         if (foil)
             collector.submitBlockModel(stack,
                                        RenderTypes.entityGlint(),
-                                       toBlockStateModel(model),
+                                       blockStateModel,
                                        0F, 0F, 0F,
-                                       light, overlay, outlineColor);
+                                       light, overlay, 0);
 
         if (flame) {
             stack.translate(0.1F, 1F, 0.1F);
             stack.scale(0.8F, 0.6F, 0.8F);
-            collector.submitBlock(stack, Blocks.FIRE.defaultBlockState(), light, OverlayTexture.NO_OVERLAY, 0);
+            collector.submitBlock(stack, Blocks.FIRE.defaultBlockState(), LightTexture.FULL_BRIGHT,
+                                  OverlayTexture.NO_OVERLAY, outlineColor);
         }
     }
 
@@ -82,17 +84,16 @@ public class GolemHatRenderer implements BlockEntityRenderer<GolemHatBlockEntity
     @Override
     public void extractRenderState(GolemHatBlockEntity golemHat, GolemHatRenderState renderState, float partialTick, Vec3 cameraPosition, ModelFeatureRenderer.@Nullable CrumblingOverlay breakProgress) {
         BlockEntityRenderer.super.extractRenderState(golemHat, renderState, partialTick, cameraPosition, breakProgress);
-        renderState.hasFlame = golemHat.hasEnchantment(Enchantments.FLAME);
+        boolean flame = renderState.hasFlame = golemHat.hasEnchantment(Enchantments.FLAME);
         renderState.hasFoil = golemHat.hasEnchantments();
         renderState.faceId = golemHat.getOrCreateFaceId();
-        renderState.lightCoords = golemHat.getLevel() != null ? LevelRenderer.getLightColor(golemHat.getLevel(),
-                                                                                            golemHat.getBlockPos()
-                                                                                                    .above()) : 0xF000F0;
+        renderState.lightCoords = flame || golemHat.getLevel() == null ? // flame is full-bright
+            LightTexture.FULL_BRIGHT :
+            LevelRenderer.getLightColor(golemHat.getLevel(), golemHat.getBlockPos().above());
     }
 
     @Override
     public void submit(GolemHatRenderState golemHat, PoseStack stack, SubmitNodeCollector nodeCollector, CameraRenderState camera) {
-        stack.rotateAround(Axis.YP.rotationDegrees(180F), 0.5F, 0.5F, 0.5F); // 180 deg
         submit(stack, nodeCollector, modelManager,
                golemHat.blockState, golemHat.faceId, golemHat.hasFoil, golemHat.hasFlame,
                golemHat.lightCoords, OverlayTexture.NO_OVERLAY, 0);

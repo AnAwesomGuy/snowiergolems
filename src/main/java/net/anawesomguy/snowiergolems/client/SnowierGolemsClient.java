@@ -123,14 +123,14 @@ public final class SnowierGolemsClient {
         static {
             // see models/block/golem_hat.json
             Vector3fc rot180 = new Vector3f(0F, 180F, 0F);
-            ItemTransform thirdPerson = new ItemTransform(new Vector3f(75F, 315F, 0F), DEFAULT_TRANSLATION,
+            ItemTransform thirdPerson = new ItemTransform(new Vector3f(75F, 45F, 0F), DEFAULT_TRANSLATION,
                                                           new Vector3f(0.375F), DEFAULT_ROTATION);
-            ItemTransform firstPerson = new ItemTransform(new Vector3f(0F, 315F, 0F), DEFAULT_TRANSLATION,
+            ItemTransform firstPerson = new ItemTransform(new Vector3f(0F, 135F, 0F), DEFAULT_TRANSLATION,
                                                           new Vector3f(0.4F), DEFAULT_ROTATION);
             TRANSFORMS = new ItemTransforms(thirdPerson, thirdPerson, firstPerson, firstPerson,
-                                            new ItemTransform(rot180, DEFAULT_TRANSLATION, // head
+                                            new ItemTransform(DEFAULT_ROTATION, DEFAULT_TRANSLATION, // head
                                                               DEFAULT_SCALE, DEFAULT_ROTATION),
-                                            new ItemTransform(new Vector3f(30F, 45F, 0F), DEFAULT_TRANSLATION, // gui
+                                            new ItemTransform(new Vector3f(30F, 225F, 0F), DEFAULT_TRANSLATION, // gui
                                                               new Vector3f(0.625F), DEFAULT_ROTATION),
                                             new ItemTransform(DEFAULT_ROTATION, new Vector3f(0F, 3F, 0F), // ground
                                                               new Vector3f(0.25F), DEFAULT_ROTATION),

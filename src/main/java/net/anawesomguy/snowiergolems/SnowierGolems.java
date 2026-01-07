@@ -1,16 +1,20 @@
 package net.anawesomguy.snowiergolems;
 
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import net.anawesomguy.snowiergolems.item.GolemHatItem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.ItemEnchantments;
 import net.minecraft.world.level.LevelReader;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
@@ -44,6 +48,25 @@ public final class SnowierGolems {
             if (stack.is(GolemObjects.GOLEM_HAT_ITEM))
                 GolemHatItem.setPumpkinFace(stack);
         });
+    }
+
+    public static ItemEnchantments getEnchantments(ItemStack stack) {
+        HolderLookup.RegistryLookup<Enchantment> lookup = CommonHooks.resolveLookup(Registries.ENCHANTMENT);
+        return lookup == null ? stack.getTagEnchantments() : stack.getAllEnchantments(lookup);
+    }
+
+    public static boolean hasEnchantment(ItemEnchantments enchantments, ResourceKey<Enchantment> enchantment) {
+        for (Holder<Enchantment> holder : enchantments.keySet())
+            if (holder.is(enchantment))
+                return true;
+        return false;
+    }
+
+    public static int getEnchantmentLevel(ItemEnchantments enchantments, ResourceKey<Enchantment> enchantment) {
+        for (Object2IntMap.Entry<Holder<Enchantment>> entry : enchantments.entrySet())
+            if (entry.getKey().is(enchantment))
+                return entry.getIntValue();
+        return 0;
     }
 
     /**

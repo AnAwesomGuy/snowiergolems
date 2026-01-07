@@ -1,11 +1,11 @@
 package net.anawesomguy.snowiergolems.client;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Axis;
 import com.mojang.serialization.MapCodec;
 import net.anawesomguy.snowiergolems.GolemObjects;
 import net.anawesomguy.snowiergolems.SnowierGolems;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.special.SpecialModelRenderer;
 import net.minecraft.core.component.DataComponentMap;
@@ -39,8 +39,10 @@ public class GolemHatSpecialRenderer implements SpecialModelRenderer<DataCompone
                                                                     ItemEnchantments.EMPTY);
             flame = enchantments.getLevel(
                 SnowierGolems.getAsHolder(Enchantments.FLAME, Minecraft.getInstance().level)) > 0;
+            if (flame)
+                light = LightTexture.FULL_BRIGHT;
         }
-        stack.rotateAround(Axis.YP.rotationDegrees(180F), 0.5F, 0.5F, 0.5F); // 180 deg
+
         stack.translate(0.5F, 0.5F, 0.5F);
         SnowierGolemsClient.StandaloneGolemHatModel.TRANSFORMS.getTransform(displayContext)
                                                               .apply(displayContext.leftHand(), stack.last());

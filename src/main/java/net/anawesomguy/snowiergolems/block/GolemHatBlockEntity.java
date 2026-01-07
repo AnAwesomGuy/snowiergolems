@@ -5,7 +5,6 @@ import net.anawesomguy.snowiergolems.SnowierGolems;
 import net.anawesomguy.snowiergolems.enchant.GolemEnchantments;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
-import net.minecraft.core.Holder.Reference;
 import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.core.HolderLookup.RegistryLookup;
 import net.minecraft.core.component.DataComponentGetter;
@@ -29,11 +28,11 @@ import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.common.CommonHooks;
 import net.neoforged.neoforge.common.world.AuxiliaryLightManager;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
 import java.util.Set;
+import java.util.function.Predicate;
 import java.util.function.ToIntFunction;
 
 public class GolemHatBlockEntity extends BlockEntity implements Nameable {
@@ -49,7 +48,7 @@ public class GolemHatBlockEntity extends BlockEntity implements Nameable {
     public static final String ENCHANTMENTS_TAG = "enchantments";
     public static final String FACE_ID_TAG = "pumpkin_face_id";
 
-    @NotNull // can always be assumed to be mutable
+    // can always be assumed to be mutable
     protected ItemEnchantments enchantments = ItemEnchantments.EMPTY;
     @Nullable
     protected Component name;
@@ -84,7 +83,7 @@ public class GolemHatBlockEntity extends BlockEntity implements Nameable {
     public void onLoad() {
         this.getOrCreateFaceId();
         super.onLoad();
-        update(null);
+        update(this.level);
     }
 
     @Override
@@ -166,8 +165,7 @@ public class GolemHatBlockEntity extends BlockEntity implements Nameable {
     public byte getOrCreateFaceId() {
         if (isValidFaceId(faceId))
             return faceId;
-        return faceId = calculateFaceId(level == null ? null : level.random, this::getLevel, enchantments.keySet(),
-                                        level);
+        return faceId = calculateFaceId(level == null ? null : level.random, this::getLevel, this::hasEnchantment);
     }
 
     public static boolean isValidFaceId(byte id) {
@@ -175,38 +173,30 @@ public class GolemHatBlockEntity extends BlockEntity implements Nameable {
     }
 
     // zero-indexed
-    public static byte calculateFaceId(@Nullable RandomSource random, ToIntFunction<Holder<Enchantment>> levelGetter,
-                                       @Nullable Set<Holder<Enchantment>> keySet,
-                                       @Nullable Object obj /*obj to get the lookup from, null is ok*/) {
+    public static byte calculateFaceId(@Nullable RandomSource random, ToIntFunction<ResourceKey<Enchantment>> levelGetter,
+                                       @Nullable Predicate<ResourceKey<Enchantment>> hasEnchantment) {
         if (random == null)
             random = FALLBACK_RANDOM;
-        if (keySet != null && !keySet.isEmpty()) {
-            if (obj == null)
-                for (Holder<Enchantment> enchantment : keySet)
-                    if (enchantment instanceof Reference<Enchantment>) {
-                        obj = enchantment;
-                        break;
-                    }
-
+        if (hasEnchantment != null) {
             float f = random.nextFloat();
-            int frostLevel = levelGetter.applyAsInt(SnowierGolems.getAsHolder(GolemEnchantments.FROST, obj));
+            int frostLevel = levelGetter.applyAsInt(GolemEnchantments.FROST);
             if (frostLevel > 0 && f < (1 - 0.7F / (2 + frostLevel))) // 1 => 65%, 3 => 82.5% :)
                 return TOTAL_FACES - 1; // frost face is the last face (its also 0-indexed)
 
             boolean b = random.nextBoolean();
-            int aggressiveLevel = levelGetter.applyAsInt(SnowierGolems.getAsHolder(GolemEnchantments.AGGRESSIVE, obj));
+            int aggressiveLevel = levelGetter.applyAsInt(GolemEnchantments.AGGRESSIVE);
             if (aggressiveLevel > 0 && f < (1 - 0.7F / (2 + aggressiveLevel))) // same math thingy as above
                 return b ? NORMAL_FACE_COUNT : NORMAL_FACE_COUNT + 1;
 
-            boolean hasFlame = keySet.contains(SnowierGolems.getAsHolder(Enchantments.FLAME, obj));
+            boolean hasFlame = hasEnchantment.test(Enchantments.FLAME);
             if (hasFlame && f > 0.3F) // 70%
                 return NORMAL_FACE_COUNT + ANGRY_FACE_COUNT; // first lit face is jack-o-lantern
 
             if (random.nextFloat() > 0.35F) // 65% chance
-                if (keySet.contains(SnowierGolems.getAsHolder(Enchantments.MULTISHOT, obj)))
+                if (hasEnchantment.test(Enchantments.MULTISHOT))
                     // lit 3-eyed is 8th and normal 3-eyed is 2nd to last
                     return (byte)(hasFlame ? 7 : TOTAL_FACES - 2);
-                else if (keySet.contains(SnowierGolems.getAsHolder(GolemEnchantments.ACCURACY, obj)))
+                else if (hasEnchantment.test(GolemEnchantments.ACCURACY))
                     // 1-eyed is the first face not in any categories
                     return NORMAL_FACE_COUNT + ANGRY_FACE_COUNT + LIT_FACE_COUNT;
         }
@@ -215,8 +205,10 @@ public class GolemHatBlockEntity extends BlockEntity implements Nameable {
     }
 
     public static byte calculateFaceId(@Nullable RandomSource random, @Nullable ItemEnchantments enchantments) {
-        return calculateFaceId(random, enchantments != null ? enchantments::getLevel : __ -> 0,
-                               enchantments != null ? enchantments.keySet() : null, null);
+        boolean nullEnchants = enchantments != null;
+        return calculateFaceId(random,
+                               nullEnchants ? e -> SnowierGolems.getEnchantmentLevel(enchantments, e) : __ -> 0,
+                               nullEnchants ? e -> SnowierGolems.hasEnchantment(enchantments, e) : null);
     }
 
     public boolean hasEnchantments() {

@@ -157,7 +157,7 @@ public abstract class SnowGolemMixin extends AbstractGolem implements OwnableEnt
             spread = -spread;
             x.set(vec.x);
             z.set(vec.z);
-            original.call(projectile, level, stack, adapter);
+            original.call(new EnchantedSnowball(level, this, hat), level, stack, adapter);
         }
         // run a last time (for return value)
         Axis.YP.rotationDegrees(spread).transform(x.get(), y, z.get(), vec);

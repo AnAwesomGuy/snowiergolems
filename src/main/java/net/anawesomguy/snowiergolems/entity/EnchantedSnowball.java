@@ -1,7 +1,10 @@
 package net.anawesomguy.snowiergolems.entity;
 
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import net.anawesomguy.snowiergolems.GolemObjects;
+import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -18,6 +21,7 @@ import net.minecraft.world.entity.monster.Blaze;
 import net.minecraft.world.entity.projectile.throwableitemprojectile.Snowball;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantedItemInUse;
+import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.ItemEnchantments;
 import net.minecraft.world.level.Level;
@@ -28,12 +32,10 @@ import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Objects;
-
 public class EnchantedSnowball extends Snowball {
     protected static final EntityDataAccessor<Byte> PIERCE_LEVEL =
         SynchedEntityData.defineId(EnchantedSnowball.class, EntityDataSerializers.BYTE);
-    public static final int IGNITE_TICKS = 400; // 2 seconds
+    public static final int IGNITE_TICKS = 40; // 2 seconds
 
     public float baseDamage = 0;
 
@@ -44,17 +46,17 @@ public class EnchantedSnowball extends Snowball {
     public EnchantedSnowball(EntityType<? extends EnchantedSnowball> entityType, Level level, ItemStack shotFrom) {
         super(entityType, level);
 
-        ItemEnchantments enchantments = shotFrom.getTagEnchantments();
+        ItemEnchantments enchantments = shotFrom.getAllEnchantments(
+            level.registryAccess().lookupOrThrow(Registries.ENCHANTMENT));
         if (!enchantments.isEmpty())
             getItem().set(DataComponents.ENCHANTMENTS, enchantments);
 
-        this.shotFrom = Objects.requireNonNull(shotFrom);
+        this.shotFrom = shotFrom;
 
         if (level instanceof ServerLevel && !shotFrom.isEmpty()) {
             EnchantedItemInUse itemInUse = getOrCreateItemInUse(null);
-            EnchantmentHelper.runIterationOnItem(
-                shotFrom,
-                (enchant, lvl) -> enchant.value().onProjectileSpawned((ServerLevel)level, lvl, itemInUse, this));
+            for (Object2IntMap.Entry<Holder<Enchantment>> entry : enchantments.entrySet())
+                entry.getKey().value().onProjectileSpawned((ServerLevel)level, entry.getIntValue(), itemInUse, this);
         }
     }
 
