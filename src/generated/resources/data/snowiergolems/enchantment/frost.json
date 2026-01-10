@@ -31,7 +31,8 @@
   },
   "primary_items": "snowiergolems:golem_hat",
   "slots": [
-    "head"
+    "head",
+    "mainhand"
   ],
   "supported_items": "#snowiergolems:enchantable/golem_hat",
   "weight": 2

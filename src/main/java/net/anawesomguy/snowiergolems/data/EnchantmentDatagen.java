@@ -60,7 +60,7 @@ public final class EnchantmentDatagen {
                      2,
                      3,
                      dynamicCost(15, 15),
-                     dynamicCost(50, 20),
+                     dynamicCost(45, 20),
                      3,
                      EquipmentSlotGroup.HEAD
                  ))
@@ -76,7 +76,8 @@ public final class EnchantmentDatagen {
                      dynamicCost(20, 15),
                      dynamicCost(60, 20),
                      3,
-                     EquipmentSlotGroup.HEAD
+                     EquipmentSlotGroup.HEAD,
+                     EquipmentSlotGroup.MAINHAND
                  )).withEffect(
                      EnchantmentEffectComponents.POST_ATTACK,
                      EnchantmentTarget.ATTACKER,

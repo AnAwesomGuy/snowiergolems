@@ -164,7 +164,7 @@ public class EnchantedSnowball extends Snowball {
                 }
 
                 // post attack effects (like freeze or smth)
-                EnchantmentHelper.doPostAttackEffectsWithItemSource(level, this, source, shotFrom);
+                EnchantmentHelper.doPostAttackEffectsWithItemSource(level, entity, source, shotFrom);
             }
             entity.hurtServer(level, source, damage);
         }

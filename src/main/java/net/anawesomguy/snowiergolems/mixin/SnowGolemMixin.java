@@ -26,6 +26,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.OwnableEntity;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier.Builder;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
@@ -43,6 +44,7 @@ import org.joml.Vector3d;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
@@ -94,9 +96,8 @@ public abstract class SnowGolemMixin extends AbstractGolem implements OwnableEnt
                                new ConditionalGoal(
                                    new NearestAttackableTargetGoal<>(this, LivingEntity.class, true,
                                                                      (entity, level) -> {
-                                                                         EntityReference<LivingEntity> reference = getOwnerReference();
-                                                                         return reference != null &&
-                                                                             reference.matches(entity);
+                                                                         EntityReference<LivingEntity> owner = getOwnerReference();
+                                                                         return owner == null || !owner.matches(entity);
                                                                      }),
                                    () -> this.getItemBySlot(EquipmentSlot.HEAD).getEnchantmentLevel(
                                        registryAccess().holderOrThrow(GolemEnchantments.AGGRESSIVE)) >= 3)); // level 3
@@ -124,7 +125,7 @@ public abstract class SnowGolemMixin extends AbstractGolem implements OwnableEnt
     @ModifyExpressionValue(method = "aiStep", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/attribute/EnvironmentAttributeSystem;getValue(Lnet/minecraft/world/attribute/EnvironmentAttribute;Lnet/minecraft/world/phys/Vec3;)Ljava/lang/Object;"))
     private Object doNotMelt(Object original) {
         // if the biome causes heat there must be a >0 level of heat-resistant to cancel the damage
-        return ((Boolean)original) && getItemBySlot(EquipmentSlot.HEAD).getEnchantmentLevel(
+        return (Boolean)original && getItemBySlot(EquipmentSlot.HEAD).getEnchantmentLevel(
             registryAccess().holderOrThrow(GolemEnchantments.HEAT_RESISTANT)) <= 0;
     }
 
@@ -141,36 +142,38 @@ public abstract class SnowGolemMixin extends AbstractGolem implements OwnableEnt
     }
 
     @WrapOperation(method = "performRangedAttack", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/projectile/Projectile;spawnProjectile(Lnet/minecraft/world/entity/projectile/Projectile;Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/item/ItemStack;Ljava/util/function/Consumer;)Lnet/minecraft/world/entity/projectile/Projectile;"))
-    private Projectile enchantSnowball(Projectile projectile, ServerLevel level, ItemStack stack, Consumer<Projectile> adapter, Operation<Projectile> original,
-                                       @Share("hatStack") LocalRef<ItemStack> hatStack, @Share("enchanted") LocalBooleanRef enchantedRef,
-                                       @Local(ordinal = 0) LocalDoubleRef x, @Local(ordinal = 1) double y, @Local(ordinal = 2) LocalDoubleRef z) {
+    private Projectile doMultishot(Projectile projectile, ServerLevel level, ItemStack stack, Consumer<Projectile> adapter, Operation<Projectile> original,
+                                   @Share("hatStack") LocalRef<ItemStack> hatStack, @Share("enchanted") LocalBooleanRef enchantedRef,
+                                   @Local(ordinal = 0) LocalDoubleRef x, @Local(ordinal = 2) LocalDoubleRef z, @Local(ordinal = 3) double yOffset) {
         ItemStack hat = hatStack.get();
         boolean enchanted = enchantedRef.get();
         int count;
-        if (!enchanted || (count = EnchantmentHelper.processProjectileCount(level, hat, this, 1)) == 0)
+        if (!enchanted || (count = EnchantmentHelper.processProjectileCount(level, hat, this, 1)) <= 1)
             return original.call(projectile, level, stack, adapter);
-        float spread = EnchantmentHelper.processProjectileSpread(level, hat, this, 0F);
+        float spread = EnchantmentHelper.processProjectileSpread(level, hat, this, 0F) / (count - 1);
+        float offset = (count - 1) % 2 * spread; // same as spread if count is even
         // tysm gigaherz for this code, i would've never figured it out
+        double y = yOffset + this.getEyeHeight() - 1.1F;
         Vector3d vec = new Vector3d();
         while (--count > 0) { // runs count - 1 times
-            Axis.YP.rotationDegrees(spread).transform(x.get(), y, z.get(), vec);
+            Axis.YP.rotationDegrees(offset + spread * (count + 1)).transform(x.get(), y, z.get(), vec);
             spread = -spread;
             x.set(vec.x);
             z.set(vec.z);
             original.call(new EnchantedSnowball(level, this, hat), level, stack, adapter);
         }
         // run a last time (for return value)
-        Axis.YP.rotationDegrees(spread).transform(x.get(), y, z.get(), vec);
+        Axis.YP.rotationDegrees(offset).transform(x.get(), y, z.get(), vec);
         x.set(vec.x);
         z.set(vec.z);
         return original.call(projectile, level, stack, adapter);
     }
 
-    @WrapOperation(method = "lambda$performRangedAttack$1", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/projectile/throwableitemprojectile/Snowball;shoot(DDDFF)V"))
-    private static void changeShootAngle(Snowball snowball, double x, double y, double z, float velocity, float inaccuracy, Operation<Void> original) {
-        // noinspection DataFlowIssue (owner will not be null)
-        original.call(snowball, x, y, z, velocity,
-                      Math.max(0F, -(float)((LivingEntity)snowball.getOwner()).getAttributeValue(
-                          GolemEnchantments.PROJECTILE_ACCURACY)));
+    @ModifyArg(method = "lambda$performRangedAttack$1", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/projectile/throwableitemprojectile/Snowball;shoot(DDDFF)V"), index = 4)
+    private static float changeInaccuracy(float inaccuracy, @Local(argsOnly = true) Snowball snowball) {
+        @SuppressWarnings("DataFlowIssue") // owner will not be null
+        AttributeInstance accuracy = ((LivingEntity)snowball.getOwner()).getAttribute(
+            GolemEnchantments.PROJECTILE_ACCURACY);
+        return accuracy == null ? inaccuracy : Math.max(0F, -(float)(accuracy.getValue()));
     }
 }
